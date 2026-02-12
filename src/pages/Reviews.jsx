@@ -5,14 +5,13 @@ const Reviews = () => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    fetch("/reviews.json")
+    fetch("http://localhost:5000/reviews")
       .then((response) => response.json())
       .then((data) => {
-        // Add random ratings to reviews
-        const reviewsWithRatings = data.map((review) => ({
+        const reviewsArray = data.data;
+        const reviewsWithRatings = reviewsArray.map((review) => ({
           ...review,
           rating: Math.floor(Math.random() * 2) + 4, // Random rating between 4-5
         }));
@@ -134,7 +133,7 @@ const Reviews = () => {
                     {/* Avatar */}
                     <div
                       className={`${getAvatarColor(
-                        review.id
+                        review.id,
                       )} w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md`}
                     >
                       {getInitials(review.name)}
@@ -173,9 +172,7 @@ const Reviews = () => {
 
               {/* Bottom Info */}
               <div className="px-8 py-4 bg-gradient-to-r from-orange-50 to-pink-50 flex items-center justify-between">
-                <span className="text-xs text-gray-500">
-                  Recently Reviewed
-                </span>
+                <span className="text-xs text-gray-500">Recently Reviewed</span>
                 <span className="text-sm font-semibold text-orange-600">
                   Adoption Success ✓
                 </span>

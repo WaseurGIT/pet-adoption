@@ -5,21 +5,23 @@ const PetCard = ({ pet }) => {
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
-    navigate(`/pet/${pet.id}`);
+    navigate(`/pet/${pet._id}`);
   };
 
   return (
     <div
-      onClick={handleViewDetails}
+      onClick={() => handleViewDetails(pet._id)}
       className="bg-white rounded-xs shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group cursor-pointer"
     >
-      
       <div className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300">
         <img
           src={pet.image}
           alt={pet.pet_name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          onError={(e) => e.target.src = "https://via.placeholder.com/400x300?text=Pet+Image"}
+          onError={(e) =>
+            (e.target.src =
+              "https://via.placeholder.com/400x300?text=Pet+Image")
+          }
         />
       </div>
 

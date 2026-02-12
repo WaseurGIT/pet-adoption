@@ -6,9 +6,9 @@ const Home = () => {
   const [pets, setPets] = useState([]);
 
   useEffect(() => {
-    fetch("/pets.json")
+    fetch("http://localhost:5000/pets")
       .then((response) => response.json())
-      .then((data) => setPets(data.slice(0, 3)))
+      .then((data) => setPets(data.data.slice(0, 3)))
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);
 
@@ -22,7 +22,7 @@ const Home = () => {
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 mb-12">
           {pets.map((pet) => (
-            <PetCard key={pet.id} pet={pet} />
+            <PetCard key={pet._id} pet={pet} />
           ))}
         </div>
       </div>

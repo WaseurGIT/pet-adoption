@@ -9,11 +9,10 @@ const PetDetails = () => {
   const { user, loading, setLoading } = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("/pets.json")
+    fetch(`http://localhost:5000/pets/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        const foundPet = data.find((p) => p.id === parseInt(id));
-        setPet(foundPet);
+        setPet(data.data);
         setLoading(false);
       })
       .catch((error) => {

@@ -7,19 +7,19 @@ const Pets = () => {
 
   const handleCategories = (category) => {
     // Filter pets based on the selected category
-    fetch("/pets.json")
+    fetch("http://localhost:5000/pets")
       .then((response) => response.json())
       .then((data) => {
-        const filteredPets = category === "All" ? data : data.filter((pet) => pet.category === category);
+        const filteredPets = category === "All" ? data.data : data.data.filter((pet) => pet.category === category);
         setPets(filteredPets);
       })
       .catch((error) => console.error("Error fetching pets:", error));
   };
 
   useEffect(() => {
-    fetch("/pets.json")
+    fetch("http://localhost:5000/pets")
       .then((response) => response.json())
-      .then((data) => setPets(data))
+      .then((data) => setPets(data.data))
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);
 
