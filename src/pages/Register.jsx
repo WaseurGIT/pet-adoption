@@ -2,23 +2,27 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Call backend register API here
+
+    const form = e.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      setError("Password must contain at least one special character");
+      return;
+    } else {
+      setError("");
+    }
+
+    
   };
 
   return (
@@ -30,8 +34,9 @@ const Register = () => {
         <p className="text-center text-gray-500 mt-2">
           Join us and adopt your new best friend
         </p>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+        <form className="mt-6 space-y-5" onSubmit={handleRegister}>
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-600">
@@ -40,8 +45,6 @@ const Register = () => {
             <input
               type="text"
               name="name"
-              value={formData.name}
-              onChange={handleChange}
               required
               className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
               placeholder="Enter your name"
@@ -56,8 +59,6 @@ const Register = () => {
             <input
               type="email"
               name="email"
-              value={formData.email}
-              onChange={handleChange}
               required
               className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
               placeholder="Enter your email"
@@ -72,8 +73,6 @@ const Register = () => {
             <input
               type="password"
               name="password"
-              value={formData.password}
-              onChange={handleChange}
               required
               className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
               placeholder="Create a password"
