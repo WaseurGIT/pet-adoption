@@ -39,7 +39,7 @@ const PetCard = ({ pet }) => {
           </div>
         </div>
 
-        <button className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold py-2 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300">
+        <button className="w-full border border-blue-500 cursor-pointer py-2 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300">
           View Details
         </button>
       </div>

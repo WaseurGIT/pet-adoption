@@ -14,13 +14,6 @@ const Navbar = () => {
         Pets
       </Link>
       <Link
-        to="/adoption"
-        onClick={() => setIsOpen(false)}
-        className="nav-link"
-      >
-        Adoption
-      </Link>
-      <Link
         to="/donation"
         onClick={() => setIsOpen(false)}
         className="nav-link"
