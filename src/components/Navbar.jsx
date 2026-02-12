@@ -13,6 +13,9 @@ const Navbar = () => {
       <Link to="/pets" onClick={() => setIsOpen(false)} className="nav-link">
         Pets
       </Link>
+      <Link to="/reviews" onClick={() => setIsOpen(false)} className="nav-link">
+        Reviews
+      </Link>
       <Link
         to="/donation"
         onClick={() => setIsOpen(false)}
