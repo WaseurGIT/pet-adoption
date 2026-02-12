@@ -10,6 +10,7 @@ import AuthProvider from "./context/AuthProvider.jsx";
 import Pets from "./pages/Pets.jsx";
 import PetDetails from "./pages/PetDetails.jsx";
 import AdoptionPage from "./pages/AdoptionPage.jsx";
+import DonationPage from "./pages/DonationPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: '/adoption/:petId',
         element: <AdoptionPage />,
+      },
+      {
+        path: '/donation',
+        element: <DonationPage />,
       }
     ],
   },
