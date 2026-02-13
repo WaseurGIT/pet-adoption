@@ -1,5 +1,7 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const DonationPage = () => {
   const navigate = useNavigate();
@@ -78,14 +80,39 @@ const DonationPage = () => {
     }
     setLoading(true);
 
-    // Simulate payment processing
-    setTimeout(() => {
-      setSubmitted(true);
-      setLoading(false);
+    try {
+      const donationData = {
+        amount: donationAmount,
+        paymentMethod,
+        ...formData,
+      };
+
+      axios.post("http://localhost:5000/donations", donationData);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: `Thank you for your donation of $${donationAmount.toFixed(2)}!`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      navigate("/");
+
+      // Simulate payment processing
       setTimeout(() => {
-        navigate("/");
-      }, 4000);
-    }, 2000);
+        setSubmitted(true);
+        setLoading(false);
+        setTimeout(() => {
+          navigate("/");
+        }, 4000);
+      }, 2000);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Donation Failed",
+        text: error.message,
+      });
+    }
   };
 
   if (submitted) {
@@ -93,9 +120,7 @@ const DonationPage = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md text-center">
           <div className="text-6xl mb-4 animate-bounce">💝</div>
-          <h2 className="text-3xl font-bold text-green-600 mb-3">
-            Thank You!
-          </h2>
+          <h2 className="text-3xl font-bold text-green-600 mb-3">Thank You!</h2>
           <p className="text-gray-600 mb-2 text-lg font-semibold">
             Your donation of ${donationAmount.toFixed(2)} has been received
           </p>
@@ -136,7 +161,7 @@ const DonationPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <div className="mb-16">
           {/* Donation Form - Main Section */}
           <div className="lg:col-span-2">
             <form
@@ -156,10 +181,11 @@ const DonationPage = () => {
                       key={option.amount}
                       type="button"
                       onClick={() => handleAmountClick(option.amount)}
-                      className={`p-4 rounded-xl font-bold text-center transition-all duration-300 border-2 ${ activeAmount === option.amount
+                      className={`p-4 rounded-xl font-bold text-center transition-all duration-300 border-2 ${
+                        activeAmount === option.amount
                           ? "border-blue-500 bg-blue-50 text-blue-700"
                           : "border-gray-200 bg-white text-gray-800 hover:border-blue-300"
-                        }`}
+                      }`}
                     >
                       <div className="text-lg">{option.label}</div>
                       <div className="text-xs mt-1 text-gray-600">
@@ -320,79 +346,11 @@ const DonationPage = () => {
                 disabled={loading || donationAmount <= 0}
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl text-lg"
               >
-                {loading ? "Processing Donation..." : `Donate $${donationAmount.toFixed(2)}`}
+                {loading
+                  ? "Processing Donation..."
+                  : `Donate $${donationAmount.toFixed(2)}`}
               </button>
             </form>
-          </div>
-
-          {/* Impact & Info Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Impact Summary */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">
-                💪 Your Impact
-              </h3>
-              <div className="space-y-3 text-sm">
-                {donationAmount > 0 && (
-                  <div className="p-3 bg-green-50 border border-green-300 rounded-lg">
-                    <p className="font-semibold text-green-700">
-                      Your ${donationAmount.toFixed(2)} donation will:
-                    </p>
-                    <ul className="mt-2 space-y-1 text-green-600">
-                      <li>✓ Provide meals for {Math.floor(donationAmount / 5)} pets</li>
-                      <li>
-                        ✓ Fund {Math.floor(donationAmount / 25)} medical check-ups
-                      </li>
-                      <li>
-                        ✓ Support {Math.floor(donationAmount / 100)} pet adoptions
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Where Money Goes */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">
-                🎯 Where Your Money Goes
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { label: "Medical Care", percent: 40 },
-                  { label: "Food & Supplies", percent: 30 },
-                  { label: "Shelter & Facilities", percent: 20 },
-                  { label: "Staff & Operations", percent: 10 },
-                ].map((item, idx) => (
-                  <div key={idx}>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-semibold text-gray-700">
-                        {item.label}
-                      </span>
-                      <span className="text-sm font-bold text-blue-600">
-                        {item.percent}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-gradient-to-r from-blue-400 to-blue-600 h-2 rounded-full transition-all"
-                        style={{ width: `${item.percent}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Tax Info */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl shadow-xl p-6 border border-orange-200">
-              <p className="text-sm text-gray-700">
-                <span className="font-bold text-orange-600">📋 Tax Info:</span>
-                <br />
-                We are a registered 501(c)(3) nonprofit organization. Your
-                donation is tax-deductible. Tax ID: 12-3456789
-              </p>
-            </div>
           </div>
         </div>
 

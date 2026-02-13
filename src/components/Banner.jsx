@@ -1,7 +1,39 @@
 import { Link } from "react-router-dom";
 import { FiHeart, FiArrowRight } from "react-icons/fi";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 const Banner = () => {
+  useGSAP(() => {
+    const tl = gsap.timeline();
+    tl.from("#left", {
+      opacity: 0,
+      x: -100,
+      duration: 1,
+      ease: "power2.out",
+    })
+      .from(
+        "#right",
+        {
+          opacity: 0,
+          x: 100,
+          duration: 1,
+          ease: "power2.out",
+        },
+        "-=0.5",
+      )
+      .from(
+        "#floating_card",
+        {
+          opacity: 0,
+          y: 50,
+          duration: 1,
+          ease: "power2.out",
+        },
+        "-=0.5",
+      );
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 to-white pt-24 pb-20 lg:pt-32 lg:pb-28">
       {/* Decorative Background Blur */}
@@ -10,7 +42,7 @@ const Banner = () => {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
           {/* Left Content */}
-          <div className="flex-1 text-center lg:text-left">
+          <div id="left" className="flex-1 text-center lg:text-left">
             <span className="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-wide text-orange-600 uppercase bg-orange-100 rounded-full">
               🐾 1,200+ Pets Found Homes
             </span>
@@ -47,7 +79,7 @@ const Banner = () => {
           </div>
 
           {/* Right Image with Floating Stats */}
-          <div className="flex-1 relative group">
+          <div id="right" className="flex-1 relative group">
             <div className="relative z-10 overflow-hidden rounded-[2.5rem] shadow-2xl border-8 border-white">
               <img
                 src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e"
@@ -57,7 +89,10 @@ const Banner = () => {
             </div>
 
             {/* Floating Card */}
-            <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl z-20 hidden md:flex items-center gap-4 animate-bounce-slow">
+            <div
+              id="floating_card"
+              className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl z-20 hidden md:flex items-center gap-4 animate-bounce-slow"
+            >
               <div className="bg-orange-100 p-3 rounded-xl text-2xl">🐶</div>
               <div>
                 <p className="text-sm font-bold text-slate-800 tracking-tight">
