@@ -42,6 +42,11 @@ const Navbar = () => {
       <Link to="/reviews" onClick={() => setIsOpen(false)} className="nav-link">
         Reviews
       </Link>
+      {user && user.role === "admin" && (
+        <Link to="/admin/dashboard" className="nav-link">
+          Dashboard
+        </Link>
+      )}
       <Link
         to="/donation"
         onClick={() => setIsOpen(false)}

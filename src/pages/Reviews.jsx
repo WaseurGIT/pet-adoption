@@ -9,7 +9,7 @@ const Reviews = () => {
 
   useEffect(() => {
     axiosSecure
-      .get("http://localhost:5000/reviews")
+      .get("/reviews")
       .then((res) => {
         const reviewsArray = res.data.data;
         const reviewsWithRatings = reviewsArray.map((review) => ({

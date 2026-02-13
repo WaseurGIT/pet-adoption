@@ -317,14 +317,16 @@ const PetDetails = () => {
             </div>
           </div>
         </div>
-        <div className="my-4">
-          <button
-            onClick={() => handleDeletePet(pet._id)}
-            className="cursor-pointer text-xl font-semibold text-white border-2 border-red-500 rounded-xl w-full bg-red-500 py-3 hover:bg-red-600 transition-colors duration-300"
-          >
-            Delete Pet
-          </button>
-        </div>
+        {user?.role === "admin" && (
+          <div className="my-4">
+            <button
+              onClick={() => handleDeletePet(pet._id)}
+              className="cursor-pointer text-xl font-semibold text-white border-2 border-red-500 rounded-xl w-full bg-red-500 py-3 hover:bg-red-600 transition-colors duration-300"
+            >
+              Delete Pet
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

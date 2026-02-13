@@ -60,12 +60,17 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const res = await googleLogin();
+      const jwtRes = await axiosSecure.post("/jwt", {
+        email: res.user.email,
+      });
+
+      localStorage.setItem("access-token", jwtRes.data.token);
       const userData = {
         name: res.user.displayName || "",
         email: res.user.email,
         uid: res.user.uid,
       };
-      await axiosSecure.post("http://localhost:5000/users", userData);
+      await axiosSecure.post("/users", userData);
       Swal.fire({
         toast: true,
         position: "top-end",

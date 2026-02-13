@@ -17,15 +17,6 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   const loginUser = async (email, password) => {
     return await signInWithEmailAndPassword(auth, email, password);
   };
@@ -46,7 +37,35 @@ const AuthProvider = ({ children }) => {
 
   const googleLogin = async () => {
     return await signInWithPopup(auth, googleProvider);
-  };      
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          const token = localStorage.getItem("access-token");
+          const res = await fetch(
+            `http://localhost:5000/users/${currentUser.email}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+          const data = await res.json();
+          setUser({ ...currentUser, role: data?.data?.role || "user" });
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+          setUser({ ...currentUser, role: "user" });
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const authInfo = {
     user,
