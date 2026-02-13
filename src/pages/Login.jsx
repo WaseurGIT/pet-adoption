@@ -1,44 +1,89 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { AuthContext } from "../context/AuthProvider";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const { loginUser, googleLogin } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading] = useState(false);
   const [error] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Call backend API here
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    try {
+      const result = await loginUser(email, password);
+
+      const userData = {
+        name: result.user.displayName,
+        email: result.user.email,
+        uid: result.user.uid,
+      };
+      await axios.post("http://localhost:5000/users", userData);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: `Welcome ${result.user.displayName}`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      form.reset();
+      navigate("/");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
   };
 
-  // Google Login Handler (to be implemented)
-  const handleGoogleLogin = () => {
-    // TODO: Implement Google login functionality
-    // You can use libraries like @react-oauth/google or firebase
-    console.log("Google login clicked");
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await googleLogin();
+      const userData = {
+        name: res.user.displayName || "",
+        email: res.user.email,
+        uid: res.user.uid,
+      };
+      await axios.post("http://localhost:5000/users", userData);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: `Welcome ${res.user.displayName}`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      navigate("/");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4 py-26 relative overflow-hidden">
       {/* Animated Blob Background */}
       <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-br from-blue-300 to-purple-300 opacity-20 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-10 right-10 w-72 h-72 bg-gradient-to-br from-purple-300 to-pink-300 opacity-20 rounded-full blur-3xl animate-pulse" style={{animationDelay: "2s"}}></div>
+      <div
+        className="absolute bottom-10 right-10 w-72 h-72 bg-gradient-to-br from-purple-300 to-pink-300 opacity-20 rounded-full blur-3xl animate-pulse"
+        style={{ animationDelay: "2s" }}
+      ></div>
       <div className="relative z-10 w-full max-w-md">
         {/* Glass Card */}
         <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/20">
@@ -58,7 +103,7 @@ const Login = () => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-5">
             {/* Email Input */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -69,8 +114,6 @@ const Login = () => {
                 <input
                   type="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
                   required
                   className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition bg-gray-50/50"
                   placeholder="you@example.com"
@@ -88,8 +131,6 @@ const Login = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  value={formData.password}
-                  onChange={handleChange}
                   required
                   className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition bg-gray-50/50"
                   placeholder="••••••••"
@@ -115,7 +156,10 @@ const Login = () => {
                 />
                 <span className="text-gray-600">Remember me</span>
               </label>
-              <Link to="#" className="text-purple-600 hover:text-purple-700 font-medium">
+              <Link
+                to="#"
+                className="text-purple-600 hover:text-purple-700 font-medium"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -130,14 +174,14 @@ const Login = () => {
             </button>
           </form>
 
-        {/* Divider */}
+          {/* Divider */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-gray-200"></div>
             <span className="text-xs text-gray-400 font-medium">OR</span>
             <div className="flex-1 h-px bg-gray-200"></div>
           </div>
 
-        {/* Google Login Button */}
+          {/* Google Login Button */}
           <button
             onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 py-3 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition font-semibold"
@@ -146,9 +190,12 @@ const Login = () => {
             Continue with Google
           </button>
 
-        <p className="text-center text-gray-600 mt-6 text-sm">
+          <p className="text-center text-gray-600 mt-6 text-sm">
             Don't have an account?{" "}
-            <Link to="/register" className="text-purple-600 font-semibold hover:text-purple-700">
+            <Link
+              to="/register"
+              className="text-purple-600 font-semibold hover:text-purple-700"
+            >
               Create one
             </Link>
           </p>

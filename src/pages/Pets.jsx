@@ -55,10 +55,23 @@ const Pets = () => {
         ))}
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {pets.map((pet) => (
-          <PetCard key={pet.id} pet={pet} />
-        ))}
+      <div className="max-w-7xl mx-auto">
+        {pets.length === 0 ? (
+          <div className="text-center py-20">
+            <h3 className="text-2xl font-bold text-gray-600 mb-2">
+              No Pets Found 🐾
+            </h3>
+            <p className="text-gray-500">
+              There are no pets available in this category.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {pets.map((pet) => (
+              <PetCard key={pet._id} pet={pet} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

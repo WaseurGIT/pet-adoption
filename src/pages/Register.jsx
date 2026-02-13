@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiUser, FiEye, FiEyeOff, FiCheck, FiX } from "react-icons/fi";
+import { AuthContext } from "../context/AuthProvider";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Register = () => {
+  const { registerUser, googleLogin } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,7 +35,7 @@ const Register = () => {
     return checks;
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -53,14 +59,63 @@ const Register = () => {
       return;
     }
 
-    setError("");
-    console.log(formData);
-    setTimeout(() => setIsLoading(false), 2000);
+    try {
+      const result = await registerUser(email, password, name);
+
+      const userData = {
+        name: result.user.displayName || name,
+        email: result.user.email,
+        uid: result.user.uid,
+      };
+      await axios.post("http://localhost:5000/users", userData);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: `Welcome ${name}! Account created successfully.`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      setFormData({ name: "", email: "", password: "" });
+      navigate("/");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Google Sign Up Handler (to be implemented)
-  const handleGoogleSignUp = () => {
-    console.log("Google sign up clicked");
+  // Google Sign Up Handler
+  const handleGoogleSignUp = async () => {
+    try {
+      const result = await googleLogin();
+      const userData = {
+        name: result.user.displayName || "",
+        email: result.user.email,
+        uid: result.user.uid,
+      };
+      await axios.post("http://localhost:5000/users", userData);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: `Welcome ${result.user.displayName}!`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      navigate("/");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
   };
 
   const passwordChecks = validatePassword(formData.password);
