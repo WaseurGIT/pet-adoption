@@ -180,7 +180,6 @@ const AddPet = () => {
                 <option value="Hamster">Hamster</option>
                 <option value="Bird">Bird</option>
                 <option value="Fish">Fish</option>
-                <option value="Other">Other</option>
               </select>
             </div>
 
@@ -286,8 +285,12 @@ const AddPet = () => {
                 >
                   <option value="">Select health status</option>
                   <option value="Healthy">Healthy</option>
-                  <option value="Minor Health Issues">Minor Health Issues</option>
-                  <option value="Special Care Required">Special Care Required</option>
+                  <option value="Minor Health Issues">
+                    Minor Health Issues
+                  </option>
+                  <option value="Special Care Required">
+                    Special Care Required
+                  </option>
                 </select>
               </div>
 
@@ -340,7 +343,10 @@ const AddPet = () => {
                 }
                 className="w-5 h-5 border-2 border-gray-200 rounded focus:border-purple-500 cursor-pointer"
               />
-              <label htmlFor="vaccinated" className="text-sm font-medium text-gray-700 cursor-pointer">
+              <label
+                htmlFor="vaccinated"
+                className="text-sm font-medium text-gray-700 cursor-pointer"
+              >
                 Vaccinated
               </label>
             </div>
@@ -360,7 +366,10 @@ const AddPet = () => {
                 }
                 className="w-5 h-5 border-2 border-gray-200 rounded focus:border-purple-500 cursor-pointer"
               />
-              <label htmlFor="available" className="text-sm font-medium text-gray-700 cursor-pointer">
+              <label
+                htmlFor="available"
+                className="text-sm font-medium text-gray-700 cursor-pointer"
+              >
                 Available for Adoption
               </label>
             </div>

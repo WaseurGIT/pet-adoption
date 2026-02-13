@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const PetDetails = () => {
   const { id } = useParams();
@@ -62,9 +63,39 @@ const PetDetails = () => {
   };
 
   const getHealthStatusColor = (status) => {
+    if (!status) return "bg-gray-100 text-gray-800";
     if (status === "Healthy") return "bg-green-100 text-green-800";
-    if (status.includes("treatment")) return "bg-yellow-100 text-yellow-800";
+    if (status.toLowerCase().includes("treatment"))
+      return "bg-yellow-100 text-yellow-800";
     return "bg-red-100 text-red-800";
+  };
+
+  const handleDeletePet = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:5000/pets/${id}`)
+          .then(() => {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Pet has been deleted.",
+              icon: "success",
+            });
+            navigate("/pets");
+          })
+          .catch((err) => {
+            console.error("Error deleting pet:", err);
+          });
+      }
+    });
   };
 
   return (
@@ -276,6 +307,14 @@ const PetDetails = () => {
               </p>
             </div>
           </div>
+        </div>
+        <div className="my-4">
+          <button
+            onClick={() => handleDeletePet(pet._id)}
+            className="cursor-pointer text-xl font-semibold text-white border-2 border-red-500 rounded-xl w-full bg-red-500 py-3 hover:bg-red-600 transition-colors duration-300"
+          >
+            Delete Pet
+          </button>
         </div>
       </div>
     </div>

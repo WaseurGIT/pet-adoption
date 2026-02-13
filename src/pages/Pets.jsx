@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const Pets = () => {
   const [pets, setPets] = useState([]);
-  const categories = ["All", "Dog", "Cat", "Rabbit", "Bird"];
+  const categories = ["All", "Dog", "Cat", "Rabbit", "Bird", "Hamster", "Fish"];
 
   const handleCategories = (category) => {
     // Filter pets based on the selected category
@@ -34,7 +34,7 @@ const Pets = () => {
         Available Pets 🐾
       </h2>
 
-      <div className="flex items-center justify-end mx-26">
+      <div className="flex items-center justify-end mx-26 my-10">
         <Link
           to="/addPet"
           className="bg-blue-600 text-white px-12 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"

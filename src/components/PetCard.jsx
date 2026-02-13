@@ -1,4 +1,5 @@
 import React from "react";
+import { TiEye } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 
 const PetCard = ({ pet }) => {
@@ -41,8 +42,9 @@ const PetCard = ({ pet }) => {
           </div>
         </div>
 
-        <button className="w-full border border-blue-500 cursor-pointer py-2 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300">
-          View Details
+        <button className="px-12 border border-blue-500 cursor-pointer py-2 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300 flex items-center justify-center ml-6">
+          <TiEye className="mx-auto text-xl" />
+          <h1 className="ml-2">View Details</h1>
         </button>
       </div>
     </div>
