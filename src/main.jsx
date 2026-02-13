@@ -13,6 +13,7 @@ import AdoptionPage from "./pages/AdoptionPage.jsx";
 import DonationPage from "./pages/DonationPage.jsx";
 import Reviews from "./pages/Reviews.jsx";
 import WriteReview from "./pages/WriteReview.jsx";
+import AddPet from "./pages/AddPet.jsx";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: '/adoption/:petId',
         element: <AdoptionPage />,
+      },
+      {
+        path: '/addPet',
+        element: <AddPet />,
       },
       {
         path: '/donation',

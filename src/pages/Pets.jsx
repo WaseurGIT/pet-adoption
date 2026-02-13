@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import PetCard from "../components/PetCard";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Pets = () => {
   const [pets, setPets] = useState([]);
@@ -8,16 +9,21 @@ const Pets = () => {
 
   const handleCategories = (category) => {
     // Filter pets based on the selected category
-    axios.get("http://localhost:5000/pets")
+    axios
+      .get("http://localhost:5000/pets")
       .then((res) => {
-        const filteredPets = category === "All" ? res.data.data : res.data.data.filter((pet) => pet.category === category);
+        const filteredPets =
+          category === "All"
+            ? res.data.data
+            : res.data.data.filter((pet) => pet.category === category);
         setPets(filteredPets);
       })
       .catch((error) => console.error("Error fetching pets:", error));
   };
 
   useEffect(() => {
-    axios.get("http://localhost:5000/pets")
+    axios
+      .get("http://localhost:5000/pets")
       .then((res) => setPets(res.data.data))
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);
@@ -27,6 +33,15 @@ const Pets = () => {
       <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
         Available Pets 🐾
       </h2>
+
+      <div className="flex items-center justify-end mx-26">
+        <Link
+          to="/addPet"
+          className="bg-blue-600 text-white px-12 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+        >
+          + Add New Pet
+        </Link>
+      </div>
 
       <div className="flex items-center justify-center gap-5 my-2">
         {categories.map((category) => (

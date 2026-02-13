@@ -201,7 +201,7 @@ const PetDetails = () => {
 
               {pet.available && (
                 <button
-                  onClick={() => navigate(`/adoption/${pet.id}`)}
+                  onClick={() => navigate(`/adoption/${pet._id}`)}
                   className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold py-4 px-6 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg"
                 >
                   🐾 Adopt Now
