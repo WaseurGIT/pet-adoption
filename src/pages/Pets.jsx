@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PetCard from "../components/PetCard";
 import { Link } from "react-router-dom";
 import axiosSecure from "../api/axiosSecure";
+import { AuthContext } from "../context/AuthProvider";
 
 const Pets = () => {
+  const { user } = useContext(AuthContext);
   const [pets, setPets] = useState([]);
   const categories = ["All", "Dog", "Cat", "Rabbit", "Bird", "Hamster", "Fish"];
 
@@ -14,8 +16,10 @@ const Pets = () => {
       .then((res) => {
         const filteredPets =
           category === "All"
-            ? res.data.data
-            : res.data.data.filter((pet) => pet.category === category);
+            ? res.data.data || res.data
+            : (res.data.data || res.data).filter(
+                (pet) => pet.category.toLowerCase() === category.toLowerCase(),
+              );
         setPets(filteredPets);
       })
       .catch((error) => console.error("Error fetching pets:", error));
@@ -24,7 +28,9 @@ const Pets = () => {
   useEffect(() => {
     axiosSecure
       .get("/pets")
-      .then((res) => setPets(res.data.data))
+      .then((res) => {
+        setPets(res.data.data || res.data);
+      })
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);
 
@@ -34,14 +40,16 @@ const Pets = () => {
         Available Pets 🐾
       </h2>
 
-      <div className="flex items-center justify-end mx-26 my-10">
-        <Link
-          to="/addPet"
-          className="bg-blue-600 text-white px-12 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
-        >
-          + Add New Pet
-        </Link>
-      </div>
+      {user?.role === "admin" && (
+        <div className="flex items-center justify-end mx-26 my-10">
+          <Link
+            to="/addPet"
+            className="bg-blue-600 text-white px-12 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+          >
+            + Add New Pet
+          </Link>
+        </div>
+      )}
 
       <div className="flex items-center justify-center gap-5 my-2">
         {categories.map((category) => (
