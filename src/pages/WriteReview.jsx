@@ -82,6 +82,7 @@ const WriteReview = () => {
           showConfirmButton: false,
           timer: 2000,
         });
+        navigate("/reviews");
       })
       .catch((error) => {
         console.error("Error submitting review:", error);

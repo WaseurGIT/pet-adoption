@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -41,9 +42,34 @@ const AdoptionPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setLoading(true);
+
+    const adoptionData = {
+      petId,
+      ...formData,
+    }
+
+   try {
+    const response = await axios.post(
+      "http://localhost:5000/adoptions",
+      adoptionData
+    );
+
+    console.log("Adoption application submitted:", response.data);
+
+    setSubmitted(true);
+    setLoading(false);
+
+    setTimeout(() => {
+      navigate("/pets");
+    }, 3000);
+
+  } catch (error) {
+    console.error("Error submitting adoption application:", error);
+    setLoading(false);
+  }
     
     // Simulate form submission
     setTimeout(() => {
