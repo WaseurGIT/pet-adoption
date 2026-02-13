@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PetCard from "../components/PetCard";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import axiosSecure from "../api/axiosSecure";
 
 const Pets = () => {
   const [pets, setPets] = useState([]);
@@ -9,8 +9,8 @@ const Pets = () => {
 
   const handleCategories = (category) => {
     // Filter pets based on the selected category
-    axios
-      .get("http://localhost:5000/pets")
+    axiosSecure
+      .get("/pets")
       .then((res) => {
         const filteredPets =
           category === "All"
@@ -22,8 +22,8 @@ const Pets = () => {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/pets")
+    axiosSecure
+      .get("/pets")
       .then((res) => setPets(res.data.data))
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);

@@ -1,7 +1,8 @@
-import axios from "axios";
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import axiosSecure from "../api/axiosSecure";
 
 const WriteReview = () => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ const WriteReview = () => {
       message: formData.message,
     };
 
-    axios
+    axiosSecure
       .post("http://localhost:5000/reviews", data)
       .then((response) => {
         console.log("Review submitted:", response.data);

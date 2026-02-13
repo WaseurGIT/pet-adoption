@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import Banner from "../components/Banner";
 import PetCard from "../components/PetCard";
+import axiosSecure from "../api/axiosSecure";
 
 const Home = () => {
   const [pets, setPets] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/pets")
-      .then((response) => response.json())
-      .then((data) => setPets(data.data.slice(0, 3)))
+    axiosSecure
+      .get("/pets", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+      .then((response) => setPets(response.data.data.slice(0, 3)))
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);
 

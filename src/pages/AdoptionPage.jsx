@@ -1,6 +1,7 @@
-import axios from "axios";
+
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axiosSecure from "../api/axiosSecure";
 
 const AdoptionPage = () => {
   const { petId } = useParams();
@@ -52,8 +53,8 @@ const AdoptionPage = () => {
     }
 
    try {
-    const response = await axios.post(
-      "http://localhost:5000/adoptions",
+    const response = await axiosSecure.post(
+      "/adoptions",
       adoptionData
     );
 

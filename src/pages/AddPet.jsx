@@ -1,7 +1,8 @@
-import axios from "axios";
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import axiosSecure from "../api/axiosSecure";
 
 const AddPet = () => {
   const navigate = useNavigate();
@@ -75,7 +76,11 @@ const AddPet = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/pets", formData);
+      const response = await axiosSecure.post("http://localhost:5000/pets", formData, {
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("access-token")}`,
+    },
+  });
       console.log("Pet added:", response.data);
       Swal.fire({
         toast: true,

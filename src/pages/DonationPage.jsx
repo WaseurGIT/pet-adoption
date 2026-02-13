@@ -1,7 +1,8 @@
-import axios from "axios";
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import axiosSecure from "../api/axiosSecure";
 
 const DonationPage = () => {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ const DonationPage = () => {
         ...formData,
       };
 
-      axios.post("http://localhost:5000/donations", donationData);
+      axiosSecure.post("http://localhost:5000/donations", donationData);
       Swal.fire({
         toast: true,
         position: "top-end",

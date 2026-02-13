@@ -1,6 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axiosSecure from "../api/axiosSecure";
 
 const Reviews = () => {
   const navigate = useNavigate();
@@ -8,7 +8,7 @@ const Reviews = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
+    axiosSecure
       .get("http://localhost:5000/reviews")
       .then((res) => {
         const reviewsArray = res.data.data;

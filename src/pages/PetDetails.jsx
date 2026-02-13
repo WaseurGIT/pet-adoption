@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
-import axios from "axios";
 import Swal from "sweetalert2";
+import axiosSecure from "../api/axiosSecure";
 
 const PetDetails = () => {
   const { id } = useParams();
@@ -11,8 +11,8 @@ const PetDetails = () => {
   const { user, loading, setLoading } = useContext(AuthContext);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/pets/${id}`)
+    axiosSecure
+      .get(`/pets/${id}`)
       .then((res) => {
         setPet(res.data.data);
         setLoading(false);
@@ -81,8 +81,12 @@ const PetDetails = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios
-          .delete(`http://localhost:5000/pets/${id}`)
+        axiosSecure
+          .delete(`http://localhost:5000/pets/${id}`, {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("access-token")}`,
+            },
+          })
           .then(() => {
             Swal.fire({
               title: "Deleted!",
@@ -93,6 +97,11 @@ const PetDetails = () => {
           })
           .catch((err) => {
             console.error("Error deleting pet:", err);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Failed to delete pet.",
+            });
           });
       }
     });
