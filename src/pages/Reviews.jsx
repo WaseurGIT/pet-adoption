@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,10 +8,10 @@ const Reviews = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/reviews")
-      .then((response) => response.json())
-      .then((data) => {
-        const reviewsArray = data.data;
+    axios
+      .get("http://localhost:5000/reviews")
+      .then((res) => {
+        const reviewsArray = res.data.data;
         const reviewsWithRatings = reviewsArray.map((review) => ({
           ...review,
           rating: Math.floor(Math.random() * 2) + 4, // Random rating between 4-5
@@ -115,7 +116,7 @@ const Reviews = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {reviews.map((review, idx) => (
             <div
-              key={review.id}
+              key={review._id}
               className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105 group animate-fade-in"
               style={{
                 animationDelay: `${idx * 50}ms`,
@@ -123,7 +124,7 @@ const Reviews = () => {
             >
               {/* Card Top Colored Bar */}
               <div
-                className={`h-1 ${getAvatarColor(review.id)} group-hover:h-2 transition-all`}
+                className={`h-1 ${getAvatarColor(idx)} group-hover:h-2 transition-all`}
               ></div>
 
               <div className="p-8">
@@ -133,7 +134,7 @@ const Reviews = () => {
                     {/* Avatar */}
                     <div
                       className={`${getAvatarColor(
-                        review.id,
+                        idx,
                       )} w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md`}
                     >
                       {getInitials(review.name)}
@@ -161,7 +162,7 @@ const Reviews = () => {
 
                 {/* Review Text */}
                 <p className="text-gray-700 leading-relaxed mb-6 text-sm">
-                  "{review.review}"
+                  "{review.message}"
                 </p>
 
                 {/* Quote Mark Background */}

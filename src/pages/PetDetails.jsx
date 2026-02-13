@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
+import axios from "axios";
 
 const PetDetails = () => {
   const { id } = useParams();
@@ -9,10 +10,10 @@ const PetDetails = () => {
   const { user, loading, setLoading } = useContext(AuthContext);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/pets/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setPet(data.data);
+    axios
+      .get(`http://localhost:5000/pets/${id}`)
+      .then((res) => {
+        setPet(res.data.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -199,9 +200,10 @@ const PetDetails = () => {
               </div>
 
               {pet.available && (
-                <button 
+                <button
                   onClick={() => navigate(`/adoption/${pet.id}`)}
-                  className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold py-4 px-6 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg">
+                  className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold py-4 px-6 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg"
+                >
                   🐾 Adopt Now
                 </button>
               )}

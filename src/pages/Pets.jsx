@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import PetCard from "../components/PetCard";
+import axios from "axios";
 
 const Pets = () => {
   const [pets, setPets] = useState([]);
@@ -7,19 +8,17 @@ const Pets = () => {
 
   const handleCategories = (category) => {
     // Filter pets based on the selected category
-    fetch("http://localhost:5000/pets")
-      .then((response) => response.json())
-      .then((data) => {
-        const filteredPets = category === "All" ? data.data : data.data.filter((pet) => pet.category === category);
+    axios.get("http://localhost:5000/pets")
+      .then((res) => {
+        const filteredPets = category === "All" ? res.data.data : res.data.data.filter((pet) => pet.category === category);
         setPets(filteredPets);
       })
       .catch((error) => console.error("Error fetching pets:", error));
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/pets")
-      .then((response) => response.json())
-      .then((data) => setPets(data.data))
+    axios.get("http://localhost:5000/pets")
+      .then((res) => setPets(res.data.data))
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);
 

@@ -94,7 +94,7 @@ const Register = () => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleRegister} className="space-y-5">
+          <form onSubmit={handleRegister} className="space-y-4">
             {/* Name Input */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -135,7 +135,7 @@ const Register = () => {
 
             {/* Password Input */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Password
               </label>
               <div className="relative">
@@ -196,7 +196,7 @@ const Register = () => {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-6">
+          <div className="flex items-center gap-3 my-2">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gray-300"></div>
             <span className="text-xs text-gray-400 uppercase font-semibold">or</span>
             <div className="flex-1 h-px bg-gradient-to-l from-transparent to-gray-300"></div>
