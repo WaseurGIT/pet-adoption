@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosSecure = axios.create({
-  baseURL: "https://pet-adaption-server.vercel.app/",
+  baseURL: "https://pet-adaption-server.vercel.app",
 });
 
 axiosSecure.interceptors.request.use(
