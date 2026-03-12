@@ -42,12 +42,11 @@ const Navbar = () => {
       <Link to="/reviews" onClick={() => setIsOpen(false)} className="nav-link">
         Reviews
       </Link>
-      {user && role === "admin" ? (
-        <Link to="/dashboard/admin" className="nav-link">
-          Dashboard
-        </Link>
-      ) : (
-        <Link to="/dashboard/user" className="nav-link">
+      {user && (
+        <Link
+          to={role === "admin" ? "/dashboard/admin" : "/dashboard/user"}
+          className="nav-link"
+        >
           Dashboard
         </Link>
       )}
