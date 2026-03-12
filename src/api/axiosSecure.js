@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosSecure = axios.create({
   baseURL: "https://pet-adaption-server.vercel.app",
-  // baseURL: "http://localhost:5173",
+  // baseURL: "http://localhost:5000",
 });
 
 axiosSecure.interceptors.request.use(
@@ -13,7 +13,6 @@ axiosSecure.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
-
 export default axiosSecure;

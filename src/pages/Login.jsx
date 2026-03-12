@@ -34,7 +34,12 @@ const Login = () => {
 
       localStorage.setItem("access-token", tokenResponse.data.token);
 
-      const userRes = await axiosSecure.get(`/usersRole/${email}`);
+      const token = localStorage.getItem("access-token");
+      const userRes = await axiosSecure.get(`/usersRole/${email}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       Swal.fire({
         toast: true,
         position: "top-end",
