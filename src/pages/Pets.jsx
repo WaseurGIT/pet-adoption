@@ -35,46 +35,46 @@ const Pets = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-orange-50 py-26 px-4">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
+    <div className="min-h-screen bg-orange-50 py-18 md:py-20 px-3 sm:px-6 md:px-8">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-6 sm:mb-10">
         Available Pets 🐾
       </h2>
 
       {user?.role === "admin" && (
-        <div className="flex items-center justify-end mx-26 my-10">
+        <div className="flex items-center justify-end mb-6 sm:mb-10 px-2 sm:px-0">
           <Link
             to="/addPet"
-            className="bg-blue-600 text-white px-12 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+            className="bg-blue-600 text-white px-6 sm:px-8 md:px-12 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 text-sm sm:text-base"
           >
             + Add New Pet
           </Link>
         </div>
       )}
 
-      <div className="flex items-center justify-center gap-5 my-2">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-8 sm:mb-10 px-2">
         {categories.map((category) => (
-          <div
+          <button
             onClick={() => handleCategories(category)}
             key={category}
-            className="bg-gray-200 text-gray-800 px-12 py-2 rounded-full text-sm font-semibold mr-2 mb-4 cursor-pointer hover:bg-gray-300 transition-colors duration-300 hover:text-orange-500"
+            className="bg-gray-200 text-gray-800 px-4 sm:px-6 md:px-8 py-2 rounded-full text-xs sm:text-sm md:text-base font-semibold cursor-pointer hover:bg-gray-300 transition-colors duration-300 hover:text-orange-500 whitespace-nowrap"
           >
             {category}
-          </div>
+          </button>
         ))}
       </div>
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-2">
         {pets.length === 0 ? (
-          <div className="text-center py-20">
-            <h3 className="text-2xl font-bold text-gray-600 mb-2">
+          <div className="text-center py-12 sm:py-16 md:py-20">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 mb-2 sm:mb-4">
               No Pets Found 🐾
             </h3>
-            <p className="text-gray-500">
+            <p className="text-sm sm:text-base text-gray-500">
               There are no pets available in this category.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {pets.map((pet) => (
               <PetCard key={pet._id} pet={pet} />
             ))}

@@ -118,7 +118,7 @@ const PetDetails = () => {
           ← Back to Pets
         </button>
 
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 gap-8 p-2">
           <div className="flex flex-col gap-4">
             <div className="relative h-96 bg-linear-to-br from-gray-200 to-gray-300 rounded-xl overflow-hidden">
               <img

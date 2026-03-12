@@ -14,7 +14,7 @@ const Reviews = () => {
         const reviewsArray = res.data.data;
         const reviewsWithRatings = reviewsArray.map((review) => ({
           ...review,
-          rating: Math.floor(Math.random() * 2) + 4, // Random rating between 4-5
+          rating: Math.floor(Math.random() * 2) + 4,
         }));
         setReviews(reviewsWithRatings);
         setLoading(false);

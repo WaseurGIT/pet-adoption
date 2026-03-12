@@ -17,38 +17,57 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (user?.email) {
+      // Fetch user info
       axiosSecure
         .get(`/users/email/${user.email}`)
-        .then((res) => setUserInfo(res.data))
-        .catch((err) => console.error(err));
+        .then((res) => {
+          setUserInfo(res.data);
+        })
+        .catch((err) => {
+          console.error("Error fetching user info:", err);
+          setUserInfo({ name: user.displayName, email: user.email });
+        });
 
       // Fetch donations and adoptions stats
       Promise.all([
-        axiosSecure.get(`/donations/${user.email}`),
-        axiosSecure.get(`/adoptions/${user.email}`),
+        axiosSecure.get(`/donations/${user.email}`).catch(() => ({ data: [] })),
+        axiosSecure.get(`/adoptions/${user.email}`).catch(() => ({ data: { data: [] } })),
       ])
         .then(([donationsRes, adoptionsRes]) => {
-          // Handle both old format (array) and new format (with stats)
-          const donationData = donationsRes.data;
-          const donations = Array.isArray(donationData) ? donationData : (donationData.data || []);
-          const donationsStats = !Array.isArray(donationData) ? donationData.stats : null;
-          
+          // Handle donations - returns array directly
+          const donations = Array.isArray(donationsRes.data) 
+            ? donationsRes.data 
+            : donationsRes.data.data || [];
+
+          // Handle adoptions - returns object with data property
           const adoptions = adoptionsRes.data.data || [];
 
-          const totalAmount = donationsStats?.totalAmount || 
-            donations.reduce((sum, donation) => sum + (donation.amount || 0), 0);
+          const totalAmount = donations.reduce(
+            (sum, donation) => sum + (donation.amount || 0),
+            0
+          );
+          
           const approved = adoptions.filter(
             (adoption) => adoption.status === "approved"
           ).length;
 
           setStats({
-            totalDonations: donationsStats?.totalCount || donations.length,
+            totalDonations: donations.length,
             totalAmount: totalAmount,
             adoptions: adoptions.length,
             applicationsApproved: approved,
           });
         })
-        .catch((err) => console.error("Error fetching stats:", err));
+        .catch((err) => {
+          console.error("Error fetching stats:", err);
+          // Set default stats if fetch fails
+          setStats({
+            totalDonations: 0,
+            totalAmount: 0,
+            adoptions: 0,
+            applicationsApproved: 0,
+          });
+        });
     }
   }, [user?.email]);
 

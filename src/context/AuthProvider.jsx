@@ -45,6 +45,7 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         try {
+          // Generate token first
           const tokenRes = await axiosSecure.post("/jwt", {
             email: currentUser.email,
           });
@@ -52,17 +53,26 @@ const AuthProvider = ({ children }) => {
           const token = tokenRes.data.token;
           localStorage.setItem("access-token", token);
 
-          const res = await axiosSecure.get(`/usersRole/${currentUser.email}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const userRole = res.data.role || "user";
-          setUser({ ...currentUser, role: userRole });
-          setRole(userRole);
-        } catch (error) {
-          console.error("Error fetching user role:", error);
-          setUser({ ...currentUser, role: "user" });
+          // Fetch user role with proper error handling
+          try {
+            const res = await axiosSecure.get(`/usersRole/${currentUser.email}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            const userRole = res.data?.role || "user";
+            setUser({ ...currentUser, role: userRole });
+            setRole(userRole);
+          } catch (roleError) {
+            console.error("Error fetching user role:", roleError);
+            // Default to user role if fetch fails
+            setUser({ ...currentUser, role: "user" });
+            setRole("user");
+          }
+        } catch (tokenError) {
+          console.error("Error generating JWT:", tokenError);
+          // If token generation fails, set user but without role
+          setUser(currentUser);
           setRole("user");
         }
       } else {

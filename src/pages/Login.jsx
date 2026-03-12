@@ -12,10 +12,10 @@ const Login = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading] = useState(false);
-  const [error] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleEmailLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
@@ -34,12 +34,7 @@ const Login = () => {
 
       localStorage.setItem("access-token", tokenResponse.data.token);
 
-      const token = localStorage.getItem("access-token");
-      const userRes = await axiosSecure.get(`/usersRole/${email}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const userRes = await axiosSecure.get(`/usersRole/${email}`);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -55,6 +50,7 @@ const Login = () => {
       } else {
         navigate("/dashboard/user");
       }
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
       Swal.fire({
         toast: true,
@@ -70,18 +66,17 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const res = await googleLogin();
-
       const userData = {
         name: res.user.displayName,
         email: res.user.email,
         uid: res.user.uid,
         role: "user",
       };
-
-      // save user
       await axiosSecure.post("/users", userData);
-
-      // get role
+      const tokenResponse = await axiosSecure.post("/jwt", {
+        email: res.user.email,
+      });
+      localStorage.setItem("access-token", tokenResponse.data.token);
       const userRes = await axiosSecure.get(`/usersRole/${res.user.email}`);
 
       Swal.fire({
@@ -98,14 +93,13 @@ const Login = () => {
       } else {
         navigate("/dashboard/user");
       }
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.error(error);
-
       Swal.fire({
         toast: true,
         position: "top-end",
         icon: "error",
-        title: "Google login failed",
+        title: "Google login failed. Please try again.",
         showConfirmButton: false,
         timer: 2000,
       });
@@ -134,7 +128,7 @@ const Login = () => {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleEmailLogin} className="space-y-5">
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
@@ -209,7 +203,8 @@ const Login = () => {
 
           <button
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 py-3 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition font-semibold"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 py-3 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FcGoogle size={24} />
             Continue with Google
