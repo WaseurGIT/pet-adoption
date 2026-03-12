@@ -9,11 +9,13 @@ import {
   updateProfile,
   onAuthStateChanged,
 } from "firebase/auth";
+import axiosSecure from "../api/axiosSecure";
 
 export const AuthContext = createContext();
 const googleProvider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
+  const [role, setRole] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -43,23 +45,30 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         try {
-          const token = localStorage.getItem("access-token");
-          const res = await fetch(
-            `http://localhost:5000/users/${currentUser.email}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+          const tokenRes = await axiosSecure.post("/jwt", {
+            email: currentUser.email,
+          });
+
+          const token = tokenRes.data.token;
+          localStorage.setItem("access-token", token);
+
+          const res = await axiosSecure.get(`/usersRole/${currentUser.email}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
             },
-          );
-          const data = await res.json();
-          setUser({ ...currentUser, role: data?.data?.role || "user" });
+          });
+          const userRole = res.data.role || "user";
+          setUser({ ...currentUser, role: userRole });
+          setRole(userRole);
         } catch (error) {
           console.error("Error fetching user role:", error);
           setUser({ ...currentUser, role: "user" });
+          setRole("user");
         }
       } else {
         setUser(null);
+        setRole(null);
+        localStorage.removeItem("access-token");
       }
       setLoading(false);
     });
@@ -69,12 +78,13 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    role,
+    loading,
     setUser,
     loginUser,
     registerUser,
     logoutUser,
     googleLogin,
-    loading,
     setLoading,
   };
 

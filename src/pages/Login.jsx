@@ -22,13 +22,19 @@ const Login = () => {
     const password = form.password.value;
     try {
       const result = await loginUser(email, password);
-
       const userData = {
         name: result.user.displayName,
         email: result.user.email,
         uid: result.user.uid,
       };
-      await axiosSecure.post("/users", userData);
+
+      const tokenResponse = await axiosSecure.post("/jwt", {
+        email: result.user.email,
+      });
+
+      localStorage.setItem("access-token", tokenResponse.data.token);
+
+      const userRes = await axiosSecure.get(`/usersRole/${email}`);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -37,22 +43,21 @@ const Login = () => {
         showConfirmButton: false,
         timer: 2000,
       });
-
-      axiosSecure
-        .post("/jwt", {
-          email: result.user.email,
-        })
-        .then((res) => {
-          localStorage.setItem("access-token", res.data.token);
-        });
-
       form.reset();
-      navigate("/");
+
+      if (userRes.data.role === "admin") {
+        navigate("/dashboard/admin");
+      } else {
+        navigate("/dashboard/user");
+      }
     } catch (error) {
       Swal.fire({
+        toast: true,
+        position: "top-end",
         icon: "error",
-        title: "Oops...",
-        text: error.message,
+        title: "Login failed. Please try again.",
+        showConfirmButton: false,
+        timer: 2000,
       });
     }
   };
@@ -60,17 +65,32 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const res = await googleLogin();
-      const jwtRes = await axiosSecure.post("/jwt", {
+
+      // 1. First, get JWT token (this now works even if user doesn't exist)
+      const tokenResponse = await axiosSecure.post("/jwt", {
         email: res.user.email,
       });
 
-      localStorage.setItem("access-token", jwtRes.data.token);
+      const token = tokenResponse.data.token;
+      localStorage.setItem("access-token", token);
+
+      // 2. Save user data (this endpoint is now public)
       const userData = {
-        name: res.user.displayName || "",
+        name: res.user.displayName,
         email: res.user.email,
         uid: res.user.uid,
+        role: "user",
       };
+
       await axiosSecure.post("/users", userData);
+
+      // 3. Get user role (this requires the token)
+      const userRes = await axiosSecure.get(`/usersRole/${res.user.email}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -79,45 +99,48 @@ const Login = () => {
         showConfirmButton: false,
         timer: 2000,
       });
-      navigate("/");
+
+      if (userRes.data.role === "admin") {
+        navigate("/dashboard/admin");
+      } else {
+        navigate("/dashboard/user");
+      }
     } catch (error) {
+      console.error("Google login error:", error);
       Swal.fire({
+        toast: true,
+        position: "top-end",
         icon: "error",
-        title: "Oops...",
-        text: error.message,
+        title: "Google login failed. Please try again.",
+        showConfirmButton: false,
+        timer: 2000,
       });
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4 py-26 relative overflow-hidden">
-      {/* Animated Blob Background */}
-      <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-br from-blue-300 to-purple-300 opacity-20 rounded-full blur-3xl animate-pulse"></div>
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4 py-26 relative overflow-hidden">
+      <div className="absolute top-10 left-10 w-72 h-72 bg-linear-to-br from-blue-300 to-purple-300 opacity-20 rounded-full blur-3xl animate-pulse"></div>
       <div
-        className="absolute bottom-10 right-10 w-72 h-72 bg-gradient-to-br from-purple-300 to-pink-300 opacity-20 rounded-full blur-3xl animate-pulse"
+        className="absolute bottom-10 right-10 w-72 h-72 bg-linear-to-br from-purple-300 to-pink-300 opacity-20 rounded-full blur-3xl animate-pulse"
         style={{ animationDelay: "2s" }}
       ></div>
       <div className="relative z-10 w-full max-w-md">
-        {/* Glass Card */}
         <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/20">
-          {/* Header */}
-          <h2 className="text-4xl font-bold text-center bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+          <h2 className="text-4xl font-bold text-center bg-linear-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
             Welcome Back
           </h2>
           <p className="text-center text-gray-500 mb-8">
             Login to your account
           </p>
 
-          {/* Error Message */}
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
               {error}
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleLogin} className="space-y-5">
-            {/* Email Input */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
@@ -134,7 +157,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Password Input */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
@@ -158,7 +180,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Remember Me & Forgot Password */}
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -177,24 +198,21 @@ const Login = () => {
               </Link>
             </div>
 
-            {/* Login Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white py-3 rounded-lg hover:shadow-lg transform hover:scale-105 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-linear-to-r from-blue-600 via-purple-600 to-pink-600 text-white py-3 rounded-lg hover:shadow-lg transform hover:scale-105 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-gray-200"></div>
             <span className="text-xs text-gray-400 font-medium">OR</span>
             <div className="flex-1 h-px bg-gray-200"></div>
           </div>
 
-          {/* Google Login Button */}
           <button
             onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 py-3 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition font-semibold"

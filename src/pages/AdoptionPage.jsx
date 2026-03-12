@@ -1,77 +1,91 @@
-
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axiosSecure from "../api/axiosSecure";
+import useAuth from "../hooks/useAuth";
 
 const AdoptionPage = () => {
+  const { user } = useAuth();
   const { petId } = useParams();
+  const location = useLocation();
+  const { petName } = location.state || {};
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    occupation: "",
-    homeType: "apartment",
-    ownRent: "own",
-    yearsAtHome: "",
-    landlordAllowsPets: "yes",
-    adultsInHome: "",
-    childrenAges: "",
-    otherPets: "no",
-    otherPetsDetails: "",
-    workSchedule: "",
-    exerciseTime: "",
-    vetName: "",
-    vetPhone: "",
-    vetEmail: "",
-    adoptionReason: "",
-    agreeTerms: false,
-  });
-
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    const form = e.target;
+    const name = form.fullName.value;
+    const email = form.email.value;
+    const phone = form.phone.value;
+    const occupation = form.occupation.value;
+    const address = form.address.value;
+    const city = form.city.value;
+    const state = form.state.value;
+    const zipCode = form.zipCode.value;
+    const homeType = form.homeType.value;
+    const ownRent = form.ownRent.value;
+    const yearsAtHome = form.yearsAtHome.value;
+    const landlordAllowsPets = form.landlordAllowsPets.value;
+    const adultsInHome = form.adultsInHome.value;
+    const childrenAges = form.childrenAges.value;
+    const otherPets = form.otherPets.value;
+    const workSchedule = form.workSchedule.value;
+    const exerciseTime = form.exerciseTime.value;
+    const vetName = form.vetName.value;
+    const vetPhone = form.vetPhone.value;
+    const vetEmail = form.vetEmail.value;
+    const adoptionReason = form.adoptionReason.value;
+
+    const formData = {
+      name,
+      email,
+      phone,
+      occupation,
+      address,
+      city,
+      state,
+      zipCode,
+      homeType,
+      ownRent,
+      yearsAtHome,
+      landlordAllowsPets,
+      adultsInHome,
+      childrenAges,
+      otherPets,
+      workSchedule,
+      exerciseTime,
+      vetName,
+      vetPhone,
+      vetEmail,
+      adoptionReason,
+      createdAt: new Date().toISOString(),
+    };
+
     const adoptionData = {
       petId,
+      petName,
       ...formData,
+    };
+
+    try {
+      const response = await axiosSecure.post("/adoptions", adoptionData);
+
+      console.log("Adoption application submitted:", response.data);
+
+      setSubmitted(true);
+      setLoading(false);
+
+      setTimeout(() => {
+        navigate("/pets");
+      }, 3000);
+    } catch (error) {
+      console.error("Error submitting adoption application:", error);
+      setLoading(false);
     }
 
-   try {
-    const response = await axiosSecure.post(
-      "/adoptions",
-      adoptionData
-    );
-
-    console.log("Adoption application submitted:", response.data);
-
-    setSubmitted(true);
-    setLoading(false);
-
-    setTimeout(() => {
-      navigate("/pets");
-    }, 3000);
-
-  } catch (error) {
-    console.error("Error submitting adoption application:", error);
-    setLoading(false);
-  }
-    
     // Simulate form submission
     setTimeout(() => {
       setSubmitted(true);
@@ -84,7 +98,7 @@ const AdoptionPage = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md text-center">
           <div className="text-6xl mb-4">✓</div>
           <h2 className="text-3xl font-bold text-green-600 mb-3">
@@ -101,7 +115,7 @@ const AdoptionPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-26 px-4">
+    <div className="min-h-screen bg-linear-to-br from-orange-50 to-pink-50 py-26 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -132,8 +146,7 @@ const AdoptionPage = () => {
                 <input
                   type="text"
                   name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
+                  defaultValue={user?.displayName}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="John Doe"
@@ -146,8 +159,7 @@ const AdoptionPage = () => {
                 <input
                   type="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  defaultValue={user?.email}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="john@example.com"
@@ -160,8 +172,6 @@ const AdoptionPage = () => {
                 <input
                   type="tel"
                   name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="(123) 456-7890"
@@ -174,8 +184,6 @@ const AdoptionPage = () => {
                 <input
                   type="text"
                   name="occupation"
-                  value={formData.occupation}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="Your profession"
                 />
@@ -196,8 +204,6 @@ const AdoptionPage = () => {
                 <input
                   type="text"
                   name="address"
-                  value={formData.address}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="123 Main Street"
@@ -211,8 +217,6 @@ const AdoptionPage = () => {
                   <input
                     type="text"
                     name="city"
-                    value={formData.city}
-                    onChange={handleChange}
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                     placeholder="City"
@@ -225,8 +229,6 @@ const AdoptionPage = () => {
                   <input
                     type="text"
                     name="state"
-                    value={formData.state}
-                    onChange={handleChange}
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                     placeholder="State"
@@ -239,8 +241,6 @@ const AdoptionPage = () => {
                   <input
                     type="text"
                     name="zipCode"
-                    value={formData.zipCode}
-                    onChange={handleChange}
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                     placeholder="12345"
@@ -262,8 +262,6 @@ const AdoptionPage = () => {
                 </label>
                 <select
                   name="homeType"
-                  value={formData.homeType}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                 >
                   <option value="apartment">Apartment</option>
@@ -279,8 +277,6 @@ const AdoptionPage = () => {
                 </label>
                 <select
                   name="ownRent"
-                  value={formData.ownRent}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                 >
                   <option value="own">Own</option>
@@ -294,8 +290,6 @@ const AdoptionPage = () => {
                 <input
                   type="number"
                   name="yearsAtHome"
-                  value={formData.yearsAtHome}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="Years"
@@ -307,8 +301,6 @@ const AdoptionPage = () => {
                 </label>
                 <select
                   name="landlordAllowsPets"
-                  value={formData.landlordAllowsPets}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                 >
                   <option value="yes">Yes</option>
@@ -332,8 +324,6 @@ const AdoptionPage = () => {
                 <input
                   type="number"
                   name="adultsInHome"
-                  value={formData.adultsInHome}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="Number"
@@ -346,41 +336,23 @@ const AdoptionPage = () => {
                 <input
                   type="text"
                   name="childrenAges"
-                  value={formData.childrenAges}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="e.g., 5, 8, 12"
                 />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Do you have other pets? <span className="text-red-500">*</span>
+                  Do you have other pets?{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="otherPets"
-                  value={formData.otherPets}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                 >
                   <option value="no">No</option>
                   <option value="yes">Yes</option>
                 </select>
               </div>
-              {formData.otherPets === "yes" && (
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Please describe your other pets
-                  </label>
-                  <textarea
-                    name="otherPetsDetails"
-                    value={formData.otherPetsDetails}
-                    onChange={handleChange}
-                    rows="3"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
-                    placeholder="Type, breed, age, temperament..."
-                  ></textarea>
-                </div>
-              )}
             </div>
           </div>
 
@@ -396,8 +368,6 @@ const AdoptionPage = () => {
                 </label>
                 <textarea
                   name="workSchedule"
-                  value={formData.workSchedule}
-                  onChange={handleChange}
                   rows="2"
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="How much time will you spend with the pet daily?"
@@ -409,8 +379,6 @@ const AdoptionPage = () => {
                 </label>
                 <textarea
                   name="exerciseTime"
-                  value={formData.exerciseTime}
-                  onChange={handleChange}
                   rows="2"
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="How will you provide exercise and enrichment?"
@@ -419,7 +387,6 @@ const AdoptionPage = () => {
             </div>
           </div>
 
-          {/* Section 6: Veterinary Information */}
           <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-orange-300">
               🏥 Veterinary Information
@@ -432,8 +399,6 @@ const AdoptionPage = () => {
                 <input
                   type="text"
                   name="vetName"
-                  value={formData.vetName}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="Dr. Smith"
                 />
@@ -445,8 +410,6 @@ const AdoptionPage = () => {
                 <input
                   type="tel"
                   name="vetPhone"
-                  value={formData.vetPhone}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="(123) 456-7890"
                 />
@@ -458,8 +421,6 @@ const AdoptionPage = () => {
                 <input
                   type="email"
                   name="vetEmail"
-                  value={formData.vetEmail}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
                   placeholder="vet@clinic.com"
                 />
@@ -474,8 +435,6 @@ const AdoptionPage = () => {
             </h2>
             <textarea
               name="adoptionReason"
-              value={formData.adoptionReason}
-              onChange={handleChange}
               rows="4"
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
               placeholder="Tell us about your motivation for adopting and what kind of pet experience you're looking for..."
@@ -488,8 +447,6 @@ const AdoptionPage = () => {
               <input
                 type="checkbox"
                 name="agreeTerms"
-                checked={formData.agreeTerms}
-                onChange={handleChange}
                 required
                 className="w-5 h-5 mt-1 text-orange-500 focus:ring-2 focus:ring-orange-500"
               />
@@ -512,8 +469,7 @@ const AdoptionPage = () => {
             </button>
             <button
               type="submit"
-              disabled={loading || !formData.agreeTerms}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold rounded-lg hover:from-orange-500 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="flex-1 px-6 py-3 bg-linear-to-r from-orange-400 to-orange-500 text-white font-bold rounded-lg hover:from-orange-500 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               {loading ? "Submitting..." : "Submit Application"}
             </button>

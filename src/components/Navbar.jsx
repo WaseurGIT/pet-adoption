@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const { user, logoutUser } = useContext(AuthContext);
+  const { user, logoutUser, role } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -42,18 +42,15 @@ const Navbar = () => {
       <Link to="/reviews" onClick={() => setIsOpen(false)} className="nav-link">
         Reviews
       </Link>
-      {user && user.role === "admin" && (
-        <Link to="/admin/dashboard" className="nav-link">
+      {user && role === "admin" ? (
+        <Link to="/dashboard/admin" className="nav-link">
+          Dashboard
+        </Link>
+      ) : (
+        <Link to="/dashboard/user" className="nav-link">
           Dashboard
         </Link>
       )}
-      <Link
-        to="/donation"
-        onClick={() => setIsOpen(false)}
-        className="nav-link"
-      >
-        Donate
-      </Link>
       {!user && (
         <Link to="/login" onClick={() => setIsOpen(false)} className="nav-link">
           Login
@@ -77,7 +74,6 @@ const Navbar = () => {
     <nav className="bg-white shadow-md fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <Link
             to="/"
             className="flex items-center gap-2 text-xl font-bold text-orange-500"
@@ -97,8 +93,7 @@ const Navbar = () => {
                     className="flex flex-col items-center cursor-pointer group"
                     onClick={() => setShowUserMenu(!showUserMenu)}
                   >
-                    {/* Avatar */}
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm hover:shadow-lg transition">
+                    <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm hover:shadow-lg transition">
                       {user.photoURL ? (
                         <img
                           src={user.photoURL}
@@ -109,7 +104,6 @@ const Navbar = () => {
                         getInitials(user.displayName)
                       )}
                     </div>
-                    {/* Name below avatar */}
                     <p className="text-xs font-semibold text-gray-700 mt-1 whitespace-nowrap">
                       {user.displayName
                         ? user.displayName.split(" ")[0]
@@ -126,31 +120,10 @@ const Navbar = () => {
                         </p>
                         <p className="text-gray-500 text-xs">{user.email}</p>
                       </div>
-                      <Link
-                        to="/dashboard"
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          setIsOpen(false);
-                        }}
-                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm"
-                      >
-                        Dashboard
-                      </Link>
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          handleLogout();
-                        }}
-                        className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 text-sm flex items-center gap-2"
-                      >
-                        <FiLogOut className="cursor-pointer" size={16} />
-                        Logout
-                      </button>
                     </div>
                   )}
                 </div>
 
-                {/* Logout Button */}
                 <button
                   onClick={handleLogout}
                   className="p-2 hover:bg-red-50 rounded-lg transition text-red-600 hover:shadow"
@@ -188,7 +161,7 @@ const Navbar = () => {
                   <p className="text-xs text-gray-500">{user.email}</p>
                 </div>
                 <Link
-                  to="/dashboard"
+                  to={role === "admin" ? "/dashboard/admin" : "/dashboard/user"}
                   onClick={() => setIsOpen(false)}
                   className="nav-link"
                 >

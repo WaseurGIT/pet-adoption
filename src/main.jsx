@@ -14,8 +14,17 @@ import DonationPage from "./pages/DonationPage.jsx";
 import Reviews from "./pages/Reviews.jsx";
 import WriteReview from "./pages/WriteReview.jsx";
 import AddPet from "./pages/AddPet.jsx";
-import AdminRoute from "./routes/AdminRoute.jsx";
 import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
+import UserDashboard from "./pages/User/UserDashboard.jsx";
+import PrivateRoute from "./routes/PrivateRoute.jsx";
+import AdminProfile from "./pages/Admin/AdminProfile.jsx";
+import UserTable from "./pages/Admin/UserTable.jsx";
+import AllPets from "./pages/Admin/AllPets.jsx";
+import DonationHistory from "./pages/Admin/DonationHistory.jsx";
+import AdoptionHistory from "./pages/Admin/AdoptionHistory.jsx";
+import UserProfile from "./pages/User/UserProfile.jsx";
+import UserDonationHistory from "./pages/User/UserDonationHistory.jsx";
+import UserAdoptionHistory from "./pages/User/UserAdoptionHistory.jsx";
 
 const router = createBrowserRouter([
   {
@@ -62,10 +71,66 @@ const router = createBrowserRouter([
         path: "/write-review",
         element: <WriteReview />,
       },
+    ],
+  },
+  {
+    path: "/dashboard/user",
+    element: (
+      <PrivateRoute role="user">
+        <UserDashboard />
+      </PrivateRoute>
+    ),
+    children: [
       {
-        element: <AdminRoute />,
-        children: [{ path: "/admin/dashboard", element: <AdminDashboard /> }],
+        index: true,
+        element: <UserProfile />,
       },
+      {
+        path: "profile",
+        element: <UserProfile />,
+      },
+      {
+        path: "userDonationHistory",
+        element: <UserDonationHistory />,
+      },
+      {
+        path: "userAdoptionHistory",
+        element: <UserAdoptionHistory />,
+      }
+    ],
+  },
+  {
+    path: "/dashboard/admin",
+    element: (
+      <PrivateRoute role="admin">
+        <AdminDashboard />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <AdminProfile />,
+      },
+      {
+        path: "profile",
+        element: <AdminProfile />,
+      },
+      {
+        path: "users",
+        element: <UserTable />,
+      },
+      {
+        path: "allPets",
+        element: <AllPets />,
+      },
+      {
+        path: "donationHistory",
+        element: <DonationHistory />,
+      },
+      {
+        path: "adoptionHistory",
+        element: <AdoptionHistory />,
+      }
     ],
   },
 ]);

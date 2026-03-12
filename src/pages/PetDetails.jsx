@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 import Swal from "sweetalert2";
 import axiosSecure from "../api/axiosSecure";
+import useAuth from "../hooks/useAuth";
 
 const PetDetails = () => {
   const { id } = useParams();
   const [pet, setPet] = useState(null);
   const navigate = useNavigate();
-  const { user, loading, setLoading } = useContext(AuthContext);
+  const { user, loading, setLoading } = useAuth();
 
   useEffect(() => {
     axiosSecure
@@ -108,9 +109,8 @@ const PetDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-26 px-4">
+    <div className="min-h-screen bg-linear-to-br from-orange-50 to-pink-50 py-26 px-4">
       <div className="max-w-6xl mx-auto">
-        {/* Back Button */}
         <button
           onClick={() => navigate("/pets")}
           className="mb-8 flex items-center text-orange-600 hover:text-orange-700 transition-colors font-semibold"
@@ -118,11 +118,9 @@ const PetDetails = () => {
           ← Back to Pets
         </button>
 
-        {/* Main Card Container */}
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
-          {/* Image Section */}
           <div className="flex flex-col gap-4">
-            <div className="relative h-96 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl overflow-hidden">
+            <div className="relative h-96 bg-linear-to-br from-gray-200 to-gray-300 rounded-xl overflow-hidden">
               <img
                 src={pet.image}
                 alt={pet.pet_name}
@@ -148,7 +146,7 @@ const PetDetails = () => {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+              <div className="bg-linear-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
                 <p className="text-xs text-blue-600 font-semibold uppercase">
                   Available
                 </p>
@@ -156,7 +154,7 @@ const PetDetails = () => {
                   {pet.available ? "Yes ✓" : "No"}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-lg border border-pink-200">
+              <div className="bg-linear-to-br from-pink-50 to-pink-100 p-4 rounded-lg border border-pink-200">
                 <p className="text-xs text-pink-600 font-semibold uppercase">
                   Vaccinated
                 </p>
@@ -232,21 +230,23 @@ const PetDetails = () => {
 
             {/* Adoption Fee and Button */}
             <div className="border-t-2 border-gray-200 pt-6">
-              <div className="bg-gradient-to-r from-orange-100 to-pink-100 p-6 rounded-lg mb-4 border border-orange-200">
+              <div className="bg-linear-to-r from-orange-100 to-pink-100 p-6 rounded-lg mb-4 border border-orange-200">
                 <p className="text-gray-600 font-semibold mb-2">Adoption Fee</p>
                 <p className="text-3xl font-bold text-orange-600">
                   ${pet.adoption_fee}
                 </p>
               </div>
 
-              {pet.available && (
-                <button
-                  onClick={() => navigate(`/adoption/${pet._id}`)}
-                  className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold py-4 px-6 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg"
-                >
-                  🐾 Adopt Now
-                </button>
-              )}
+              <button
+                onClick={() =>
+                  navigate(`/adoption/${pet._id}`, {
+                    state: { petName: pet.pet_name },
+                  })
+                }
+                className="w-full bg-linear-to-r from-orange-400 to-orange-500 text-white font-bold py-4 px-6 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg"
+              >
+                🐾 Adopt Now
+              </button>
               {!pet.available && (
                 <div className="w-full bg-gray-400 text-white font-bold py-4 px-6 rounded-lg text-center text-lg">
                   Not Available for Adoption
@@ -268,7 +268,7 @@ const PetDetails = () => {
             Complete Information
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+            <div className="p-6 bg-linear-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
               <h3 className="text-sm font-bold text-blue-600 uppercase mb-3">
                 Breed Details
               </h3>
@@ -283,7 +283,7 @@ const PetDetails = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
+            <div className="p-6 bg-linear-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
               <h3 className="text-sm font-bold text-green-600 uppercase mb-3">
                 Health Information
               </h3>
@@ -301,7 +301,7 @@ const PetDetails = () => {
               </p>
             </div>
 
-            <div className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
+            <div className="p-6 bg-linear-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
               <h3 className="text-sm font-bold text-purple-600 uppercase mb-3">
                 Personal Details
               </h3>
