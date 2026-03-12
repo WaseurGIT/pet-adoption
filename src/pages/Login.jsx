@@ -71,15 +71,6 @@ const Login = () => {
     try {
       const res = await googleLogin();
 
-      // 1. First, get JWT token (this now works even if user doesn't exist)
-      const tokenResponse = await axiosSecure.post("/jwt", {
-        email: res.user.email,
-      });
-
-      const token = tokenResponse.data.token;
-      localStorage.setItem("access-token", token);
-
-      // 2. Save user data (this endpoint is now public)
       const userData = {
         name: res.user.displayName,
         email: res.user.email,
@@ -87,14 +78,11 @@ const Login = () => {
         role: "user",
       };
 
+      // save user
       await axiosSecure.post("/users", userData);
 
-      // 3. Get user role (this requires the token)
-      const userRes = await axiosSecure.get(`/usersRole/${res.user.email}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // get role
+      const userRes = await axiosSecure.get(`/usersRole/${res.user.email}`);
 
       Swal.fire({
         toast: true,
@@ -111,12 +99,13 @@ const Login = () => {
         navigate("/dashboard/user");
       }
     } catch (error) {
-      console.error("Google login error:", error);
+      console.error(error);
+
       Swal.fire({
         toast: true,
         position: "top-end",
         icon: "error",
-        title: "Google login failed. Please try again.",
+        title: "Google login failed",
         showConfirmButton: false,
         timer: 2000,
       });
