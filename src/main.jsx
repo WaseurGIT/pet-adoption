@@ -25,6 +25,8 @@ import AdoptionHistory from "./pages/Admin/AdoptionHistory.jsx";
 import UserProfile from "./pages/User/UserProfile.jsx";
 import UserDonationHistory from "./pages/User/UserDonationHistory.jsx";
 import UserAdoptionHistory from "./pages/User/UserAdoptionHistory.jsx";
+import PetFoods from "./pages/PetFoods.jsx";
+import AddPetFoods from "./pages/Admin/AddPetFoods.jsx";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +54,10 @@ const router = createBrowserRouter([
         element: <PetDetails />,
       },
       {
+        path: "/petFoods",
+        element: <PetFoods />,
+      },
+      {
         path: "/adoption/:petId",
         element: <AdoptionPage />,
       },
@@ -62,6 +68,10 @@ const router = createBrowserRouter([
       {
         path: "/donation",
         element: <DonationPage />,
+      },
+      {
+        path: "addPetFoods",
+        element: <AddPetFoods />,
       },
       {
         path: "/reviews",
@@ -96,7 +106,7 @@ const router = createBrowserRouter([
       {
         path: "userAdoptionHistory",
         element: <UserAdoptionHistory />,
-      }
+      },
     ],
   },
   {
@@ -130,7 +140,7 @@ const router = createBrowserRouter([
       {
         path: "adoptionHistory",
         element: <AdoptionHistory />,
-      }
+      },
     ],
   },
 ]);

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Banner from "../components/Banner";
 import PetCard from "../components/PetCard";
 import axiosSecure from "../api/axiosSecure";
+import PetFoods from "./PetFoods";
+import Reviews from "./Reviews";
 
 const Home = () => {
   const [pets, setPets] = useState([]);
@@ -31,6 +33,8 @@ const Home = () => {
           ))}
         </div>
       </div>
+      <PetFoods/>
+      <Reviews/>
     </div>
   );
 };

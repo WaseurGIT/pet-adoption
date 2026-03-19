@@ -10,16 +10,18 @@ import {
   FiEdit2,
   FiTrash2,
 } from "react-icons/fi";
-import { GiDogBowl } from "react-icons/gi";
+import { GiDogBowl, GiPaw } from "react-icons/gi";
 import axiosSecure from "../../api/axiosSecure";
+import DonationStats from "../../components/AdminStats/DonationStats";
+import AdoptionStats from "../../components/AdminStats/AdoptionStats";
+import PetStats from "../../components/AdminStats/PetStats";
 
 const AdminProfile = () => {
   const [pets, setPets] = useState([]);
   const [users, setUsers] = useState([]);
   const [donations, setDonations] = useState([]);
   const [adoptions, setAdoptions] = useState([]);
-  const [recentPets, setRecentPets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [petFoods, setPetFoods] = useState([]);
 
   useEffect(() => {
     axiosSecure
@@ -52,23 +54,25 @@ const AdminProfile = () => {
   }, []);
 
   useEffect(() => {
+    axiosSecure
+      .get("/petfoods")
+      .then((res) => setPetFoods(res.data.data || []))
+      .catch((error) => console.error("Error fetching pet foods:", error));
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch dashboard statistics
         const [petsRes, usersRes, donationsRes] = await Promise.all([
           axiosSecure.get("/pets"),
           axiosSecure.get("/users"),
           axiosSecure.get("/donations"),
         ]);
 
-        // Get recent pets
-        setRecentPets(petsRes.data.data.slice(0, 5) || []);
         setUsers(usersRes.data);
         setDonations(donationsRes.data.data || []);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
-        setLoading(false);
       }
     };
     fetchData();
@@ -99,21 +103,9 @@ const AdminProfile = () => {
     </div>
   );
 
-  const ActionButton = ({ icon: Icon, label, color, to, onClick }) => (
-    <Link
-      to={to}
-      onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-3 rounded-lg font-semibold text-white transition-all duration-300 hover:shadow-lg transform hover:scale-105 ${color}`}
-    >
-      <Icon size={18} />
-      {label}
-    </Link>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50 pt-10 pb-10">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             Admin Dashboard
@@ -121,10 +113,9 @@ const AdminProfile = () => {
           <p className="text-gray-600">Manage your pet adoption platform</p>
         </div>
 
-        {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <StatCard
-            icon={GiDogBowl}
+            icon={GiPaw}
             title="Total Pets"
             value={pets?.length || 0}
             color="#3B82F6"
@@ -139,7 +130,10 @@ const AdminProfile = () => {
             icon={FiDollarSign}
             title="Total Donations"
             value={`$${(Array.isArray(donations) && donations.length > 0
-              ? donations.reduce((sum, donation) => sum + (donation.amount || 0), 0)
+              ? donations.reduce(
+                  (sum, donation) => sum + (donation.amount || 0),
+                  0,
+                )
               : 0
             ).toLocaleString()}`}
             color="#10B981"
@@ -150,114 +144,21 @@ const AdminProfile = () => {
             value={adoptions?.length || 0}
             color="#F59E0B"
           />
+          <StatCard
+            icon={GiDogBowl}
+            title="Total Pet Foods"
+            value={petFoods?.length || 0}
+            color="#F59E0B"
+          />
         </div>
-
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <ActionButton
-              icon={FiPlus}
-              label="Add New Pet"
-              color="bg-gradient-to-r from-blue-500 to-blue-600"
-              to="/addPet"
-            />
-          </div>
-        </div>
-
-        {/* Recent Pets */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Recent Pets Added
-            </h2>
-            <Link
-              to="/admin/manage-pets"
-              className="text-blue-600 font-semibold flex items-center gap-2 hover:text-blue-700"
-            >
-              View All <FiArrowRight size={18} />
-            </Link>
-          </div>
-
-          {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="text-gray-500">Loading...</div>
-            </div>
-          ) : recentPets.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b-2 border-gray-200">
-                    <th className="text-left py-4 px-4 font-semibold text-gray-700">
-                      Pet Name
-                    </th>
-                    <th className="text-left py-4 px-4 font-semibold text-gray-700">
-                      Type
-                    </th>
-                    <th className="text-left py-4 px-4 font-semibold text-gray-700">
-                      Gender
-                    </th>
-                    <th className="text-left py-4 px-4 font-semibold text-gray-700">
-                      Age
-                    </th>
-                    <th className="text-center py-4 px-4 font-semibold text-gray-700">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentPets.map((pet) => (
-                    <tr
-                      key={pet._id}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition"
-                    >
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={pet.image}
-                            alt={pet.pet_name}
-                            className="w-10 h-10 rounded-full object-cover"
-                            onError={(e) =>
-                              (e.target.src =
-                                "https://via.placeholder.com/40x40?text=Pet")
-                            }
-                          />
-                          <span className="font-semibold text-gray-800">
-                            {pet.pet_name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4 text-gray-600">
-                        {pet.pet_type}
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold">
-                          {pet.gender}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-gray-600">{pet.age}</td>
-                      <td className="py-4 px-4 text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
-                            <FiEdit2 size={18} />
-                          </button>
-                          <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
-                            <FiTrash2 size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              No pets found.{" "}
-              <Link to="/addPet" className="text-blue-600 font-semibold">
-                Add one now
-              </Link>
-            </div>
-          )}
+        {/* stats */}
+        <div>
+          {/* <PetStats /> */}
+          <PetStats />
+          {/* <AdoptionStats /> */}
+          <AdoptionStats />
+          {/* <DonationStats /> */}
+          <DonationStats />
         </div>
       </div>
     </div>

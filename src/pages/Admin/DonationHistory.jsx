@@ -123,7 +123,6 @@ const DonationHistory = () => {
               </select>
             </div>
 
-            {/* Payment Method Filter */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Filter by Payment Method
@@ -147,7 +146,6 @@ const DonationHistory = () => {
           </p>
         </div>
 
-        {/* Donations Grid */}
         {processedDonations.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {processedDonations.map((donation) => (
@@ -155,7 +153,6 @@ const DonationHistory = () => {
                 key={donation._id}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
-                {/* Card Header */}
                 <div className="bg-linear-to-r from-blue-500 to-blue-600 px-6 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -167,16 +164,14 @@ const DonationHistory = () => {
                       </div>
                     </div>
                     {donation.anonymous && (
-                      <span className="bg-white bg-opacity-20 text-white px-2 py-1 rounded text-xs font-semibold">
+                      <span className="bg-white bg-opacity-20 px-2 py-1 rounded text-xs font-semibold">
                         Anonymous
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Card Body */}
                 <div className="p-6">
-                  {/* Amount */}
                   <div className="mb-4 pb-4 border-b border-gray-200">
                     <p className="text-gray-500 text-xs font-semibold mb-1">DONATION AMOUNT</p>
                     <h3 className="text-3xl font-bold text-green-600">
@@ -184,7 +179,6 @@ const DonationHistory = () => {
                     </h3>
                   </div>
 
-                  {/* Donor Info */}
                   {!donation.anonymous && (
                     <>
                       <div className="mb-4">
@@ -234,7 +228,7 @@ const DonationHistory = () => {
                   {/* Date */}
                   <div className="flex items-center gap-2 text-sm text-gray-600 pt-4 border-t border-gray-200">
                     <FiCalendar size={16} className="text-gray-400" />
-                    <span>{formatDate(donation.createdAt)}</span>
+                    <span>{formatDate(donation.donationDate)}</span>
                   </div>
                 </div>
               </div>

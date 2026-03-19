@@ -166,7 +166,6 @@ const AddPet = () => {
               />
             </div>
 
-            {/* Category */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Category <span className="text-red-500">*</span>

@@ -39,8 +39,8 @@ const Navbar = () => {
       <Link to="/pets" onClick={() => setIsOpen(false)} className="nav-link">
         Pets
       </Link>
-      <Link to="/reviews" onClick={() => setIsOpen(false)} className="nav-link">
-        Reviews
+      <Link to="/petFoods" onClick={() => setIsOpen(false)} className="nav-link">
+        Pet Foods
       </Link>
       {user && (
         <Link

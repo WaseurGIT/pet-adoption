@@ -71,6 +71,7 @@ const Login = () => {
         email: res.user.email,
         uid: res.user.uid,
         role: "user",
+        createdAt: new Date().split("T")[0],
       };
       await axiosSecure.post("/users", userData);
       const tokenResponse = await axiosSecure.post("/jwt", {

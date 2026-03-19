@@ -4,7 +4,7 @@ import axiosSecure from "../../api/axiosSecure";
 import { Link, useNavigate } from "react-router-dom";
 import { AiFillHome } from "react-icons/ai";
 import { IoMdLogOut, IoMdPaw } from "react-icons/io";
-import { MdMiscellaneousServices, MdNoteAlt } from "react-icons/md";
+import { MdMiscellaneousServices, MdNoteAlt, MdSetMeal } from "react-icons/md";
 import { FaCar, FaUsers } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { CiUser } from "react-icons/ci";
@@ -79,14 +79,15 @@ const AdminSidebar = ({ onClose }) => {
 
       {/* Navigation Links */}
       <div className="flex flex-col space-y-2 md:space-y-5 mt-6 md:mt-8">
-        
         <Link
           to="/dashboard/admin"
           onClick={onClose}
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
         >
           <CiUser className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
-          <span className="text-xs md:text-base text-blue-500 font-medium">Profile</span>
+          <span className="text-xs md:text-base text-blue-500 font-medium">
+            Profile
+          </span>
         </Link>
 
         <Link
@@ -95,7 +96,9 @@ const AdminSidebar = ({ onClose }) => {
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
         >
           <AiFillHome className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
-          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">Home</span>
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            Home
+          </span>
         </Link>
 
         <Link
@@ -104,7 +107,9 @@ const AdminSidebar = ({ onClose }) => {
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
         >
           <FaUsers className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
-          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">All Users</span>
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            All Users
+          </span>
         </Link>
 
         <Link
@@ -113,25 +118,31 @@ const AdminSidebar = ({ onClose }) => {
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
         >
           <IoMdPaw className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
-          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">Add Pet</span>
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            Add Pet
+          </span>
         </Link>
-        
+
         <Link
           to="/dashboard/admin/allPets"
           onClick={onClose}
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
         >
           <IoMdPaw className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
-          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">All Pets</span>
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            All Pets
+          </span>
         </Link>
-        
+
         <Link
           to="/dashboard/admin/donationHistory"
           onClick={onClose}
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
         >
           <RiRefund2Fill className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
-          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">Donation History</span>
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            Donation History
+          </span>
         </Link>
 
         <Link
@@ -140,10 +151,22 @@ const AdminSidebar = ({ onClose }) => {
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
         >
           <LuNotebook className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
-          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">Adoption History</span>
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            Adoption History
+          </span>
         </Link>
-        
-        
+
+        <Link
+          to="/addPetFoods"
+          onClick={onClose}
+          className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
+        >
+          <MdSetMeal className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            Add Pet Foods
+          </span>
+        </Link>
+
         <button
           onClick={() => {
             handleLogout();
@@ -152,7 +175,9 @@ const AdminSidebar = ({ onClose }) => {
           className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-red-100 transition w-full text-left"
         >
           <IoMdLogOut className="text-lg md:text-xl text-red-500 flex-shrink-0" />
-          <span className="text-xs md:text-base text-red-500 font-medium hover:text-red-700">Logout</span>
+          <span className="text-xs md:text-base text-red-500 font-medium hover:text-red-700">
+            Logout
+          </span>
         </button>
       </div>
     </aside>

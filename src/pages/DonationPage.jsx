@@ -1,24 +1,32 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axiosSecure from "../api/axiosSecure";
+import useAuth from "../hooks/useAuth";
 
 const DonationPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [activeAmount, setActiveAmount] = useState(null);
   const [customAmount, setCustomAmount] = useState("");
   const [donationAmount, setDonationAmount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    message: "",
-    anonymous: false,
-  });
+  const [userInfo, setUserInfo] = useState(null);
+
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    axiosSecure
+      .get(`/users/email/${user.email}`)
+      .then((res) => {
+        setUserInfo(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching user info:", err);
+        setUserInfo({ name: user.displayName, email: user.email });
+      });
+  }, [user.email]);
 
   const donationOptions = [
     { amount: 10, label: "$10", impact: "Feed 1 dog for a week" },
@@ -65,16 +73,16 @@ const DonationPage = () => {
     setActiveAmount(null);
   };
 
-  const handleFormChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const form = e.target;
+    const name = form.fullName.value;
+    const email = form.email.value;
+    const phone = form.phone.value;
+    const message = form.message.value;
+    const anonymous = form.anonymous.checked;
+
     if (donationAmount <= 0) {
       alert("Please select or enter a donation amount");
       return;
@@ -85,10 +93,15 @@ const DonationPage = () => {
       const donationData = {
         amount: donationAmount,
         paymentMethod,
-        ...formData,
+        name,
+        email,
+        phone,
+        message,
+        anonymous,
+        donationDate: new Date().toISOString().split("T")[0],
       };
 
-      axiosSecure.post("http://localhost:5000/donations", donationData);
+      axiosSecure.post("/donations", donationData);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -97,14 +110,14 @@ const DonationPage = () => {
         showConfirmButton: false,
         timer: 2000,
       });
-      navigate("/");
+      navigate("/dashboard/user/userDonationHistory");
 
       // Simulate payment processing
       setTimeout(() => {
         setSubmitted(true);
         setLoading(false);
         setTimeout(() => {
-          navigate("/");
+          navigate("/dashboard/user/userDonationHistory");
         }, 4000);
       }, 2000);
     } catch (error) {
@@ -126,7 +139,7 @@ const DonationPage = () => {
             Your donation of ${donationAmount.toFixed(2)} has been received
           </p>
           <p className="text-gray-500 mb-6">
-            A confirmation email has been sent to {formData.email}. Your
+            A confirmation email has been sent to {userInfo?.email}. Your
             generosity will help us continue our mission to rescue and care for
             animals in need.
           </p>
@@ -277,8 +290,7 @@ const DonationPage = () => {
                     <input
                       type="text"
                       name="fullName"
-                      value={formData.fullName}
-                      onChange={handleFormChange}
+                      defaultValue={userInfo?.name || ""}
                       required
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                       placeholder="John Doe"
@@ -292,8 +304,7 @@ const DonationPage = () => {
                       <input
                         type="email"
                         name="email"
-                        value={formData.email}
-                        onChange={handleFormChange}
+                        defaultValue={userInfo?.email}
                         required
                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                         placeholder="john@example.com"
@@ -306,8 +317,6 @@ const DonationPage = () => {
                       <input
                         type="tel"
                         name="phone"
-                        value={formData.phone}
-                        onChange={handleFormChange}
                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                         placeholder="(123) 456-7890"
                       />
@@ -318,9 +327,8 @@ const DonationPage = () => {
                       Message (Optional)
                     </label>
                     <textarea
+                      type="text"
                       name="message"
-                      value={formData.message}
-                      onChange={handleFormChange}
                       rows="3"
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                       placeholder="Share why you support our mission..."
@@ -330,8 +338,6 @@ const DonationPage = () => {
                     <input
                       type="checkbox"
                       name="anonymous"
-                      checked={formData.anonymous}
-                      onChange={handleFormChange}
                       className="w-4 h-4"
                     />
                     <span className="ml-3 text-gray-700">

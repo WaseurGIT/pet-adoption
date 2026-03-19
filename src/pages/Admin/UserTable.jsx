@@ -75,6 +75,10 @@ const UserTable = () => {
                       <p className="text-xs sm:text-sm text-gray-700 break-all">{user.email}</p>
                     </div>
                     <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Created At</p>
+                      <p className="text-xs sm:text-sm text-gray-700 break-all">{user.createdAt}</p>
+                    </div>
+                    <div>
                       <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Role</p>
                       <span className="inline-block px-3 py-1 mt-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">
                         {user.role || "user"}
@@ -93,6 +97,7 @@ const UserTable = () => {
                     <th className="px-4 py-3 text-left font-semibold">#</th>
                     <th className="px-4 py-3 text-left font-semibold">Name</th>
                     <th className="px-4 py-3 text-left font-semibold">Email</th>
+                    <th className="px-4 py-3 text-left font-semibold">Created At</th>
                     <th className="px-4 py-3 text-left font-semibold">Role</th>
                     <th className="px-4 py-3 text-center font-semibold">Action</th>
                   </tr>
@@ -104,6 +109,7 @@ const UserTable = () => {
                       <td className="px-4 py-3 font-medium text-gray-700 w-12">{index + 1}</td>
                       <td className="px-4 py-3 text-gray-800 font-medium">{user.name}</td>
                       <td className="px-4 py-3 text-gray-600 text-sm">{user.email}</td>
+                      <td className="px-4 py-3 text-gray-600 text-sm">{user.createdAt}</td>
                       <td className="px-4 py-3">
                         <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm font-semibold">
                           {user.role || "user"}
