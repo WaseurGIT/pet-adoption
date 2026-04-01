@@ -81,6 +81,7 @@ const Login = () => {
         email: res.user.email,
       });
       localStorage.setItem("access-token", tokenResponse.data.token);
+      
       const userRes = await axiosSecure.get(`/usersRole/${res.user.email}`);
 
       Swal.fire({
@@ -93,6 +94,7 @@ const Login = () => {
       });
 
       if (userRes.data.role === "admin") {
+        console.log(userRes.data.role);
         navigate("/dashboard/admin");
       } else {
         navigate("/dashboard/user");
