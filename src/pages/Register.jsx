@@ -29,19 +29,22 @@ const Register = () => {
     const password = form.password.value;
 
     try {
-      setLoading(true);
+      console.log("Registering user with email:", email);
       const result = await registerUser(email, password, name);
+      setLoading(true);
+      console.log("User registered");
 
       const userData = {
         name: name,
         email: result.user.email,
         uid: result.user.uid,
         role: "user",
-        createdAt: new Date().toISOString().split("T")[0],
       };
 
+      console.log("User Data:", userData);
       await axiosSecure.post("/users", userData);
 
+      console.log("User data posted to server");
       const tokenResponse = await axiosSecure.post("/jwt", {
         email: result.user.email,
       });
@@ -76,8 +79,6 @@ const Register = () => {
         });
       }
       setError(error.message || "Registration failed. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 

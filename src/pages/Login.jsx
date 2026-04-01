@@ -7,12 +7,11 @@ import Swal from "sweetalert2";
 import axiosSecure from "../api/axiosSecure";
 
 const Login = () => {
-  const { loginUser, googleLogin } = useContext(AuthContext);
+  const { loginUser, googleLogin, loading } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleEmailLogin = async (e) => {
@@ -22,6 +21,7 @@ const Login = () => {
     const password = form.password.value;
     try {
       const result = await loginUser(email, password);
+
       const userData = {
         name: result.user.displayName,
         email: result.user.email,
@@ -50,7 +50,7 @@ const Login = () => {
       } else {
         navigate("/dashboard/user");
       }
-    // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       Swal.fire({
         toast: true,
@@ -66,14 +66,17 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const res = await googleLogin();
+      console.log("Initial");
       const userData = {
         name: res.user.displayName,
         email: res.user.email,
         uid: res.user.uid,
         role: "user",
-        createdAt: new Date().split("T")[0],
       };
+
+      console.log("User Data:", userData);
       await axiosSecure.post("/users", userData);
+      console.log("Post");
       const tokenResponse = await axiosSecure.post("/jwt", {
         email: res.user.email,
       });
@@ -94,7 +97,7 @@ const Login = () => {
       } else {
         navigate("/dashboard/user");
       }
-    // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       Swal.fire({
         toast: true,
