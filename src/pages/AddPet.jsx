@@ -54,7 +54,6 @@ const AddPet = () => {
     setError("");
     setSuccess("");
 
-    // Validation
     if (
       !formData.pet_name ||
       !formData.category ||
@@ -76,7 +75,7 @@ const AddPet = () => {
     setLoading(true);
 
     try {
-      const response = await axiosSecure.post("http://localhost:5000/pets", formData, {
+      const response = await axiosSecure.post("/pets", formData, {
     headers: {
       authorization: `Bearer ${localStorage.getItem("access-token")}`,
     },
@@ -136,7 +135,6 @@ const AddPet = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Image Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Pet Image <span className="text-red-500">*</span>
@@ -150,7 +148,6 @@ const AddPet = () => {
               />
             </div>
 
-            {/* Pet Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Pet Name <span className="text-red-500">*</span>
@@ -187,9 +184,7 @@ const AddPet = () => {
               </select>
             </div>
 
-            {/* Two Column Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Breed */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Breed <span className="text-red-500">*</span>
@@ -205,7 +200,6 @@ const AddPet = () => {
                 />
               </div>
 
-              {/* Age */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Age <span className="text-red-500">*</span>
@@ -221,7 +215,6 @@ const AddPet = () => {
                 />
               </div>
 
-              {/* Gender */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Gender <span className="text-red-500">*</span>
@@ -239,7 +232,6 @@ const AddPet = () => {
                 </select>
               </div>
 
-              {/* Color */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Color <span className="text-red-500">*</span>
@@ -255,7 +247,6 @@ const AddPet = () => {
                 />
               </div>
 
-              {/* Size */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Size <span className="text-red-500">*</span>
@@ -275,7 +266,6 @@ const AddPet = () => {
                 </select>
               </div>
 
-              {/* Health Status */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Health Status <span className="text-red-500">*</span>
@@ -298,7 +288,6 @@ const AddPet = () => {
                 </select>
               </div>
 
-              {/* Location */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Location <span className="text-red-500">*</span>
@@ -314,7 +303,6 @@ const AddPet = () => {
                 />
               </div>
 
-              {/* Adoption Fee */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Adoption Fee <span className="text-red-500">*</span>
@@ -332,7 +320,6 @@ const AddPet = () => {
               </div>
             </div>
 
-            {/* Vaccinated */}
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -355,7 +342,6 @@ const AddPet = () => {
               </label>
             </div>
 
-            {/* Available */}
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -378,7 +364,6 @@ const AddPet = () => {
               </label>
             </div>
 
-            {/* Description */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Description <span className="text-red-500">*</span>
@@ -394,7 +379,6 @@ const AddPet = () => {
               ></textarea>
             </div>
 
-            {/* Submit Buttons */}
             <div className="flex gap-4 pt-6">
               <button
                 type="button"
