@@ -8,7 +8,7 @@ import { MdMiscellaneousServices, MdNoteAlt, MdSetMeal } from "react-icons/md";
 import { FaCar, FaUsers } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { CiUser } from "react-icons/ci";
-import { FaScrewdriverWrench } from "react-icons/fa6";
+import { FaScrewdriverWrench, FaUserDoctor } from "react-icons/fa6";
 import { GiFullMotorcycleHelmet } from "react-icons/gi";
 import { RiRefund2Fill } from "react-icons/ri";
 import { LuNotebook } from "react-icons/lu";
@@ -131,6 +131,28 @@ const AdminSidebar = ({ onClose }) => {
           <IoMdPaw className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
           <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
             All Pets
+          </span>
+        </Link>
+
+        <Link
+          to="/addVets"
+          onClick={onClose}
+          className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
+        >
+          <FaUserDoctor className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            Add Vets
+          </span>
+        </Link>
+
+        <Link
+          to="/dashboard/admin/vets"
+          onClick={onClose}
+          className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 md:py-2.5 rounded hover:bg-blue-200 transition"
+        >
+          <FaUserDoctor className="text-lg md:text-xl text-blue-500 flex-shrink-0" />
+          <span className="text-xs md:text-base text-blue-500 font-medium hover:text-blue-700">
+            All Vets
           </span>
         </Link>
 

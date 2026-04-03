@@ -27,6 +27,8 @@ import UserDonationHistory from "./pages/User/UserDonationHistory.jsx";
 import UserAdoptionHistory from "./pages/User/UserAdoptionHistory.jsx";
 import PetFoods from "./pages/PetFoods.jsx";
 import AddPetFoods from "./pages/Admin/AddPetFoods.jsx";
+import AddVet from "./pages/AddVet.jsx";
+import Vets from "./pages/Vets.jsx";
 
 const router = createBrowserRouter([
   {
@@ -80,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: "/write-review",
         element: <WriteReview />,
+      },
+      {
+        path: "addVets",
+        element: <AddVet />,
       },
     ],
   },
@@ -140,6 +146,10 @@ const router = createBrowserRouter([
       {
         path: "adoptionHistory",
         element: <AdoptionHistory />,
+      },
+      {
+        path: "vets",
+        element: <Vets />,
       },
     ],
   },

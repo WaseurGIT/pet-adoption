@@ -4,6 +4,7 @@ import PetCard from "../components/PetCard";
 import axiosSecure from "../api/axiosSecure";
 import PetFoods from "./PetFoods";
 import Reviews from "./Reviews";
+import Vets from "./Vets";
 
 const Home = () => {
   const [pets, setPets] = useState([]);
@@ -33,8 +34,9 @@ const Home = () => {
           ))}
         </div>
       </div>
-      <PetFoods/>
-      <Reviews/>
+      <PetFoods />
+      <Vets />
+      <Reviews />
     </div>
   );
 };

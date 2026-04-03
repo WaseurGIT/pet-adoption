@@ -15,6 +15,7 @@ import axiosSecure from "../../api/axiosSecure";
 import DonationStats from "../../components/AdminStats/DonationStats";
 import AdoptionStats from "../../components/AdminStats/AdoptionStats";
 import PetStats from "../../components/AdminStats/PetStats";
+import { FaUserDoctor } from "react-icons/fa6";
 
 const AdminProfile = () => {
   const [pets, setPets] = useState([]);
@@ -22,6 +23,7 @@ const AdminProfile = () => {
   const [donations, setDonations] = useState([]);
   const [adoptions, setAdoptions] = useState([]);
   const [petFoods, setPetFoods] = useState([]);
+  const [vets, setVets] = useState([]);
 
   useEffect(() => {
     axiosSecure
@@ -61,16 +63,25 @@ const AdminProfile = () => {
   }, []);
 
   useEffect(() => {
+    axiosSecure
+      .get("/vets")
+      .then((res) => setVets(res.data.data || []))
+      .catch((error) => console.error("Error fetching vets:", error));
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        const [petsRes, usersRes, donationsRes] = await Promise.all([
+        const [petsRes, usersRes, donationsRes, vetsRes] = await Promise.all([
           axiosSecure.get("/pets"),
           axiosSecure.get("/users"),
           axiosSecure.get("/donations"),
+          axiosSecure.get("/vets"),
         ]);
 
         setUsers(usersRes.data);
         setDonations(donationsRes.data.data || []);
+        setVets(vetsRes.data.data || []);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       }
@@ -148,6 +159,13 @@ const AdminProfile = () => {
             icon={GiDogBowl}
             title="Total Pet Foods"
             value={petFoods?.length || 0}
+            color="#F59E0B"
+          />
+
+          <StatCard
+            icon={FaUserDoctor}
+            title="Total Vets"
+            value={vets?.length || 0}
             color="#F59E0B"
           />
         </div>

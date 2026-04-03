@@ -83,7 +83,7 @@ const PetDetails = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axiosSecure
-          .delete(`http://localhost:5000/pets/${id}`, {
+          .delete(`/pets/${id}`, {
             headers: {
               authorization: `Bearer ${localStorage.getItem("access-token")}`,
             },
