@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import PetCard from "../components/PetCard";
 import { Link } from "react-router-dom";
-import axiosSecure from "../api/axiosSecure";
+// import axiosSecure from "../api/axiosSecure";
 import { AuthContext } from "../context/AuthProvider";
+import axios from "axios";
 
 const Pets = () => {
   const { user } = useContext(AuthContext);
@@ -10,8 +11,7 @@ const Pets = () => {
   const categories = ["All", "Dog", "Cat", "Rabbit", "Bird", "Hamster", "Fish"];
 
   const handleCategories = (category) => {
-    // Filter pets based on the selected category
-    axiosSecure
+    axios
       .get("/pets")
       .then((res) => {
         const filteredPets =
@@ -26,7 +26,7 @@ const Pets = () => {
   };
 
   useEffect(() => {
-    axiosSecure
+    axios
       .get("/pets")
       .then((res) => {
         setPets(res.data.data || res.data);
