@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -6,51 +5,54 @@ import axiosSecure from "../api/axiosSecure";
 
 const AddPet = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    pet_name: "",
-    category: "",
-    breed: "",
-    age: "",
-    gender: "",
-    color: "",
-    size: "",
-    vaccinated: false,
-    health_status: "",
-    adoption_fee: "",
-    location: "",
-    description: "",
-    image: "",
-    available: true,
-  });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          image: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+  const isImgbbLink = (value) => {
+    try {
+      const url = new URL(value);
+      return (
+        url.protocol === "https:" 
+      );
+    } catch {
+      return false;
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const form = e.target;
+    const pet_name = form.pet_name.value;
+    const category = form.category.value;
+    const breed = form.breed.value;
+    const age = form.age.value;
+    const gender = form.gender.value;
+    const color = form.color.value;
+    const size = form.size.value;
+    const health_status = form.health_status.value;
+    const adoption_fee = form.adoption_fee.value;
+    const location = form.location.value;
+    const description = form.description.value;
+    const image = form.image.value.trim();
+
+    const formData = {
+      pet_name,
+      category,
+      breed,
+      age,
+      gender,
+      color,
+      size,
+      health_status,
+      adoption_fee,
+      location,
+      description,
+      image,
+    };
+
     setError("");
     setSuccess("");
 
@@ -72,15 +74,17 @@ const AddPet = () => {
       return;
     }
 
+    if (!isImgbbLink(formData.image)) {
+      setError("Please provide a valid imgbb link (ibb.co or i.ibb.co only)");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await axiosSecure.post("/pets", formData, {
-    headers: {
-      authorization: `Bearer ${localStorage.getItem("access-token")}`,
-    },
-  });
+      const response = await axiosSecure.post("/pets", formData);
       console.log("Pet added:", response.data);
+      setSuccess("Pet added successfully");
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -137,14 +141,14 @@ const AddPet = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pet Image <span className="text-red-500">*</span>
+                Imgbb Image Link <span className="text-red-500">*</span>
               </label>
               <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
+                type="url"
+                name="image"
                 required
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
+                placeholder="https://i.ibb.co/... or https://ibb.co/..."
               />
             </div>
 
@@ -155,8 +159,6 @@ const AddPet = () => {
               <input
                 type="text"
                 name="pet_name"
-                value={formData.pet_name}
-                onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
                 placeholder="Enter pet name"
@@ -169,8 +171,6 @@ const AddPet = () => {
               </label>
               <select
                 name="category"
-                value={formData.category}
-                onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
               >
@@ -192,8 +192,6 @@ const AddPet = () => {
                 <input
                   type="text"
                   name="breed"
-                  value={formData.breed}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
                   placeholder="Enter breed"
@@ -207,8 +205,6 @@ const AddPet = () => {
                 <input
                   type="text"
                   name="age"
-                  value={formData.age}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
                   placeholder="e.g., 2 years"
@@ -221,8 +217,6 @@ const AddPet = () => {
                 </label>
                 <select
                   name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
                 >
@@ -239,8 +233,6 @@ const AddPet = () => {
                 <input
                   type="text"
                   name="color"
-                  value={formData.color}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
                   placeholder="e.g., Golden"
@@ -253,8 +245,6 @@ const AddPet = () => {
                 </label>
                 <select
                   name="size"
-                  value={formData.size}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
                 >
@@ -272,8 +262,6 @@ const AddPet = () => {
                 </label>
                 <select
                   name="health_status"
-                  value={formData.health_status}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
                 >
@@ -295,8 +283,6 @@ const AddPet = () => {
                 <input
                   type="text"
                   name="location"
-                  value={formData.location}
-                  onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
                   placeholder="e.g., Dhaka"
@@ -310,8 +296,6 @@ const AddPet = () => {
                 <input
                   type="number"
                   name="adoption_fee"
-                  value={formData.adoption_fee}
-                  onChange={handleChange}
                   required
                   min="0"
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
@@ -325,13 +309,12 @@ const AddPet = () => {
                 type="checkbox"
                 name="vaccinated"
                 id="vaccinated"
-                checked={formData.vaccinated}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    vaccinated: e.target.checked,
-                  }))
-                }
+                // onChange={(e) =>
+                //   setFormData((prev) => ({
+                //     ...prev,
+                //     vaccinated: e.target.checked,
+                //   }))
+                // }
                 className="w-5 h-5 border-2 border-gray-200 rounded focus:border-purple-500 cursor-pointer"
               />
               <label
@@ -347,13 +330,12 @@ const AddPet = () => {
                 type="checkbox"
                 name="available"
                 id="available"
-                checked={formData.available}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    available: e.target.checked,
-                  }))
-                }
+                // onChange={(e) =>
+                //   setFormData((prev) => ({
+                //     ...prev,
+                //     available: e.target.checked,
+                //   }))
+                // }
                 className="w-5 h-5 border-2 border-gray-200 rounded focus:border-purple-500 cursor-pointer"
               />
               <label
@@ -370,8 +352,6 @@ const AddPet = () => {
               </label>
               <textarea
                 name="description"
-                value={formData.description}
-                onChange={handleChange}
                 required
                 rows="4"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition resize-none"
