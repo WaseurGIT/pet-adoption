@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
-import axiosSecure from "../api/axiosSecure";
 import VetCard from "../components/Vetcard";
+// import axiosSecure from "../api/axiosSecure";
+import axios from "axios";
 
 const Vets = () => {
   const { loading, setLoading } = useAuth();
   const [vets, setVets] = useState([]);
 
   useEffect(() => {
-    axiosSecure
-      .get("/vets")
+    let mounted = true;
+    setLoading(true);
+    axios
+      .get("https://pet-adaption-server.onrender.com/vets")
       .then((res) => {
-        setVets(res.data.data);
-        setLoading(false);
+        if (!mounted) return;
+        const payload = res.data?.data ?? res.data;
+        setVets(Array.isArray(payload) ? payload : []);
       })
       .catch((err) => {
         console.error("Error fetching vets:", err);
-        setLoading(false);
-      });
+      })
+      .finally(() => mounted && setLoading(false));
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const handleDeleteVet = (id) => {

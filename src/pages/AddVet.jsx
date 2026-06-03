@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import axiosSecure from "../api/axiosSecure";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const AddVet = () => {
   const navigate = useNavigate();
-  const [profileImage, setProfileImage] = useState(null);
-  const handleProfileImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const isImgbbLink = (value) => {
+    try {
+      const url = new URL(value);
+      return url.protocol === "https:";
+    } catch {
+      return false;
     }
   };
 
@@ -27,6 +24,16 @@ const AddVet = () => {
     const address = form.address.value;
     const specialization = form.specialization.value;
     const bio = form.bio.value;
+    const profileImage = form.profileImage.value?.trim();
+
+    if (!profileImage || !isImgbbLink(profileImage)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid image",
+        text: "Please provide a valid imgbb image link (https://i.ibb.co/... or https://ibb.co/...).",
+      });
+      return;
+    }
 
     const formData = {
       name,
@@ -139,11 +146,10 @@ const AddVet = () => {
           <div className="md:col-span-2">
             <label className="block mb-1 font-medium">Profile Image</label>
             <input
-              type="file"
-              accept="image/*"
+              type="url"
               name="profileImage"
-              onChange={handleProfileImageChange}
-              placeholder="https://example.com/profileImage.jpg"
+              required
+              placeholder="https://i.ibb.co/... or https://ibb.co/..."
               className="w-full border rounded-lg px-3 py-2 bg-white"
             />
           </div>

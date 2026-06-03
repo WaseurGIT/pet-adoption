@@ -1,6 +1,7 @@
-import axiosSecure from "../api/axiosSecure";
+
 import Swal from "sweetalert2";
 import useAuth from "../hooks/useAuth";
+import axios from "axios";
 
 const VetCard = ({ vet, onDelete }) => {
   const { user, role } = useAuth();
@@ -15,9 +16,10 @@ const VetCard = ({ vet, onDelete }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosSecure
-          .delete(`/vets/${vet._id}`)
+        axios
+          .delete(`https://pet-adaption-server.onrender.com/vets/${vet._id}`)
           .then((response) => {
+            console.log("Vet deleted successfully:", response.data);
             Swal.fire({
               icon: "success",
               title: "Deleted!",
