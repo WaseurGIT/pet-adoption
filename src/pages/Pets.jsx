@@ -12,7 +12,7 @@ const Pets = () => {
 
   const handleCategories = (category) => {
     axios
-      .get("/pets")
+      .get("http://localhost:5000/pets")
       .then((res) => {
         const filteredPets =
           category === "All"
@@ -27,9 +27,10 @@ const Pets = () => {
 
   useEffect(() => {
     axios
-      .get("/pets")
+      .get("http://localhost:5000/pets")
       .then((res) => {
         setPets(res.data.data || res.data);
+        console.log("Fetched pets:", res.data.data || res.data);
       })
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);

@@ -11,11 +11,7 @@ const Home = () => {
 
   useEffect(() => {
     axiosSecure
-      .get("/pets", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access-token")}`,
-        },
-      })
+      .get("/pets")
       .then((response) => setPets(response.data.data.slice(0, 3)))
       .catch((error) => console.error("Error fetching pets:", error));
   }, []);
