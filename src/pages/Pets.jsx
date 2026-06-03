@@ -12,7 +12,7 @@ const Pets = () => {
 
   const handleCategories = (category) => {
     axios
-      .get("http://localhost:5000/pets")
+      .get("https://pet-adaption-server.onrender.com/pets")
       .then((res) => {
         const filteredPets =
           category === "All"
@@ -27,7 +27,7 @@ const Pets = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/pets")
+      .get("https://pet-adaption-server.onrender.com/pets")
       .then((res) => {
         setPets(res.data.data || res.data);
         console.log("Fetched pets:", res.data.data || res.data);
@@ -38,7 +38,7 @@ const Pets = () => {
   return (
     <div className="min-h-screen bg-orange-50 py-18 md:py-20 px-3 sm:px-6 md:px-8">
       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-6 sm:mb-10">
-        Available Pets 🐾
+        Available Pets
       </h2>
 
       {user?.role === "admin" && (
